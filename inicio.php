@@ -63,7 +63,7 @@
             </div>
 
             <div class="nav-item">
-                <a href="#" class="nav-link" data-page="inscripciones">
+                <a href="archivo2.php" class="nav-link" data-page="inscripciones">
                     <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
                     <span class="nav-label">Inscripciones</span>
                     <span class="nav-badge" id="badge-inscripciones">3</span>
