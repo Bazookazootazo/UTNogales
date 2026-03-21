@@ -1,3 +1,4 @@
+<?php $pagina_actual = 'inicio'; ?>
 <!DOCTYPE HTML>
 <html lang="es">
 <head>
@@ -44,10 +45,10 @@
             <span class="nav-section-label">Principal</span>
 
             <div class="nav-item">
-                <a href="#" class="nav-link active" data-page="dashboard">
-                    <span class="nav-icon"><i class="fas fa-gauge-high"></i></span>
-                    <span class="nav-label">Dashboard</span>
-                </a>
+               <a href="inicio.php" class="nav-link <?php echo ($pagina_actual == 'inicio') ? 'active' : ''; ?>">
+    <span class="nav-icon"><i class="fas fa-th-large"></i></span>
+    <span class="nav-label">Dashboard</span>
+</a>
             </div>
 
             <div class="nav-divider"></div>
@@ -63,11 +64,10 @@
             </div>
 
             <div class="nav-item">
-                <a href="archivo2.php" class="nav-link" data-page="inscripciones">
-                    <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
-                    <span class="nav-label">Inscripciones</span>
-                    <span class="nav-badge" id="badge-inscripciones">3</span>
-                </a>
+                <a href="archivo2.php" class="nav-link <?php echo ($pagina_actual == 'inscripciones') ? 'active' : ''; ?>">
+    <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
+    <span class="nav-label">Inscripciones</span>
+</a>
             </div>
 
             <div class="nav-item">
@@ -880,18 +880,6 @@ document.getElementById('sidebarOverlay').addEventListener('click', function() {
     this.classList.remove('active');
 });
 
-/* ────────────────────────────────────────────────────────────
-   NAVEGACIÓN SIDEBAR (resaltado activo)
-──────────────────────────────────────────────────────────── */
-document.querySelectorAll('.nav-link[data-page]').forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        this.classList.add('active');
-        // En producción: cargar contenido de la página o redirigir
-        showToast(`Navegando a: ${this.querySelector('.nav-label').textContent}`, 'info');
-    });
-});
 
 /* ────────────────────────────────────────────────────────────
    TOAST
@@ -933,6 +921,5 @@ document.addEventListener('DOMContentLoaded', function() {
     renderInscripciones();
 });
 </script>
-
 </body>
 </html>
