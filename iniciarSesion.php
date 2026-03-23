@@ -36,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['correo'] = $corr_db;
             $_SESSION['rol'] = $rol_db;
             $_SESSION['estatus'] = $est_db;
+            
             $stmt->close();
             $con->close();
             header("Location: inicio.php");

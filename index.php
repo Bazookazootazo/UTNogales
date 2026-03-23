@@ -47,7 +47,10 @@
                     </div>
                     <button type="submit" name="submit" class="btn-login">
                         Acceder al Sistema
-                    </button> 
+                    </button>
+                    <a href="mtb-user-admin.php">
+                        prueba
+                    </a> 
                 </form>
                 <p class="footer-copy">&copy; <?php echo date("Y"); ?> Universidad Tecnológica de Nogales. </p>
             </div>

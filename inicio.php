@@ -65,13 +65,13 @@
 
             <div class="nav-item">
                 <a href="archivo2.php" class="nav-link <?php echo ($pagina_actual == 'inscripciones') ? 'active' : ''; ?>">
-    <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
-    <span class="nav-label">Inscripciones</span>
-</a>
+                    <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
+                    <span class="nav-label">Inscripciones</span>
+                </a>
             </div>
 
             <div class="nav-item">
-                <a href="#" class="nav-link" data-page="pistas">
+                <a href="pistas.php" class="nav-link" data-page="pistas">
                     <span class="nav-icon"><i class="fas fa-map-location-dot"></i></span>
                     <span class="nav-label">Pistas</span>
                 </a>
