@@ -1,35 +1,31 @@
 <?php
 session_start();
-include 'conexion.php';
+require 'conexion.php'; 
 
 if (isset($_POST['submit'])) {
-    $nombre = $_POST['nombre'] ?? '';
-    $contra = $_POST['contraseña'] ?? '';
+    $correo = $_POST['nombre'] ?? ''; 
+    $pass_escrita = $_POST['contraseña'] ?? '';
 
     try {
-        $stmt = $conn->prepare("CALL sp_login(?, ?)");
-        $stmt->execute([$nombre, $contra]);
-        
-        $res = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        // Limpiamos resultados extra para evitar errores de conexión
-        while ($stmt->nextRowset()) { }
-        $stmt->closeCursor();
+        $stmt = $conn->prepare("CALL sp_login(?)");
+        $stmt->execute([$correo]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($res && $res['estado'] === 'EXITO') {
-            $_SESSION['id_usuario'] = $res['id_usuario'];
-            $_SESSION['rol']        = $res['rol'];
-            header("Location: inicio.php?msg=" . urlencode($res['mensaje']));
-            exit();
+        if ($user) {
+            // VERIFICACIÓN TÉCNICA
+            if (password_verify($pass_escrita, $user['hash'])) {
+                $_SESSION['id_usuario'] = $user['id'];
+                $_SESSION['rol'] = $user['rol'];
+                header("Location: inicio.php");
+                exit();
+            } else {
+                // Esto te dirá si el hash está mal guardado
+                header("Location: index.php?error=La contraseña no coincide con el hash guardado.");
+            }
         } else {
-            // El SP mandó un mensaje de error específico
-            $error = $res['mensaje'] ?? 'Error desconocido en el servidor';
-            header("Location: index.php?error=" . urlencode($error));
-            exit();
+            header("Location: index.php?error=El correo no existe en la BD.");
         }
     } catch (PDOException $e) {
-        header("Location: index.php?error=" . urlencode("Error de base de datos: " . $e->getMessage()));
-        exit();
+        die("Error de SQL: " . $e->getMessage());
     }
 }
-?>
