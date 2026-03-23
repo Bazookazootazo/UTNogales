@@ -569,6 +569,7 @@
 <!-- ══════════════════════════════════════════════════════════
      JAVASCRIPT
 ══════════════════════════════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 /* ────────────────────────────────────────────────────────────
    DATOS MOCK — En producción, estos vendrían del backend (PHP/AJAX)
@@ -919,6 +920,28 @@ document.addEventListener('DOMContentLoaded', function() {
     renderEventos();
     renderRanking();
     renderInscripciones();
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const msg = urlParams.get('msg');
+
+    if (msg === 'ok') {
+        Swal.fire({
+            title: '¡Sesión Iniciada!',
+            text: 'Bienvenido a la plataforma de gestión de eventos MTB. Puedes comenzar a explorar los eventos disponibles y gestionar tus inscripciones.',
+            icon: 'success',
+            confirmButtonColor: '#008170'
+        }).then(() => {
+            limpiarURL();
+        });
+    }
+    // Función para quitar el ?msg=... de la barra de direcciones
+    function limpiarURL() {
+        const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+    }
 });
 </script>
 </body>

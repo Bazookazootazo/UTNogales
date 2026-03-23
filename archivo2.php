@@ -867,9 +867,7 @@ function eliminarFila(dorsal) {
     showToast('Inscripción eliminada', 'danger');
 }
 
-/* ────────────────────────────────────────────────────────────
-   SIDEBAR RESPONSIVE
-──────────────────────────────────────────────────────────── */
+
 document.getElementById('toggleSidebar').addEventListener('click', function() {
     document.getElementById('mtbSidebar').classList.toggle('open');
     document.getElementById('sidebarOverlay').classList.toggle('active');
