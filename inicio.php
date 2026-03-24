@@ -161,7 +161,7 @@ try {
             <div class="user-role"><?php echo $rol; ?></div>
         </a>
         
-        <a href="cerrarSesion.php" title="Cerrar sesión" style="color:rgba(255,255,255,.4); transition: color .2s;">
+        <a href="#" onclick="confirmarCierreSesion(event)" title="Cerrar sesión" style="color:rgba(255,255,255,.4); transition: color .2s;">
             <i class="fas fa-right-from-bracket"></i>
         </a>
     </div>
@@ -612,33 +612,6 @@ const DATA_RANKING = [
     { pos: 5, nombre: 'Luis Herrera',    puntos: 310, equipo: 'Trek Racing MX' },
 ];
 
-const DATA_INSCRIPCIONES = [
-    { dorsal: 1,  deportista: 'Carlos Mendoza',    evento: 'Enduro Nogales',     categoria: 'Elite',     pista: 'La Rumorosa',       fecha: '2026-03-01', estatus: 'Confirmado' },
-    { dorsal: 2,  deportista: 'Sofía Gutiérrez',   evento: 'Enduro Nogales',     categoria: 'Elite',     pista: 'La Rumorosa',       fecha: '2026-03-01', estatus: 'Confirmado' },
-    { dorsal: 3,  deportista: 'Roberto Vega',       evento: 'XCO Hermosillo',     categoria: 'Sub-23',    pista: 'Cerro de la Silla', fecha: '2026-03-05', estatus: 'Pendiente' },
-    { dorsal: 4,  deportista: 'Ana Torres',         evento: 'XCO Hermosillo',     categoria: 'Elite',     pista: 'Cerro de la Silla', fecha: '2026-03-05', estatus: 'Confirmado' },
-    { dorsal: 5,  deportista: 'Luis Herrera',       evento: 'DH Sierra Madre',    categoria: 'Master',    pista: 'Sierra Fría',       fecha: '2026-03-08', estatus: 'Pendiente' },
-    { dorsal: 6,  deportista: 'María Ramírez',      evento: 'Enduro Nogales',     categoria: 'Junior',    pista: 'La Rumorosa',       fecha: '2026-03-10', estatus: 'Confirmado' },
-    { dorsal: 7,  deportista: 'Jorge Castillo',     evento: 'DH Sierra Madre',    categoria: 'Elite',     pista: 'Sierra Fría',       fecha: '2026-03-11', estatus: 'Cancelado' },
-    { dorsal: 8,  deportista: 'Valeria Cruz',        evento: 'XCO Hermosillo',     categoria: 'Sub-23',    pista: 'Cerro de la Silla', fecha: '2026-03-12', estatus: 'Confirmado' },
-    { dorsal: 9,  deportista: 'Héctor Moreno',       evento: 'Cross Country Ures', categoria: 'Master',    pista: 'Monte Albán',       fecha: '2026-03-13', estatus: 'Pendiente' },
-    { dorsal: 10, deportista: 'Isabella Díaz',       evento: 'Enduro Nogales',     categoria: 'Elite',     pista: 'La Rumorosa',       fecha: '2026-03-14', estatus: 'Confirmado' },
-    { dorsal: 11, deportista: 'Miguel Ángel Rosas',  evento: 'XCO Hermosillo',     categoria: 'Junior',    pista: 'Cerro de la Silla', fecha: '2026-03-15', estatus: 'Confirmado' },
-    { dorsal: 12, deportista: 'Fernanda López',      evento: 'DH Sierra Madre',    categoria: 'Elite',     pista: 'Sierra Fría',       fecha: '2026-03-15', estatus: 'Pendiente' },
-    { dorsal: 13, deportista: 'Tomás Guerrero',      evento: 'Enduro Nogales',     categoria: 'Master',    pista: 'La Rumorosa',       fecha: '2026-03-16', estatus: 'Confirmado' },
-    { dorsal: 14, deportista: 'Paola Sánchez',       evento: 'Cross Country Ures', categoria: 'Sub-23',    pista: 'Monte Albán',       fecha: '2026-03-16', estatus: 'Cancelado' },
-    { dorsal: 15, deportista: 'Andrés Fuentes',      evento: 'XCO Hermosillo',     categoria: 'Elite',     pista: 'Cerro de la Silla', fecha: '2026-03-17', estatus: 'Confirmado' },
-    { dorsal: 16, deportista: 'Clara Noriega',       evento: 'DH Sierra Madre',    categoria: 'Junior',    pista: 'Sierra Fría',       fecha: '2026-03-17', estatus: 'Pendiente' },
-    { dorsal: 17, deportista: 'Gabriel Reyes',       evento: 'Enduro Nogales',     categoria: 'Sub-23',    pista: 'La Rumorosa',       fecha: '2026-03-18', estatus: 'Confirmado' },
-    { dorsal: 18, deportista: 'Daniela Montoya',     evento: 'Cross Country Ures', categoria: 'Elite',     pista: 'Monte Albán',       fecha: '2026-03-18', estatus: 'Confirmado' },
-    { dorsal: 19, deportista: 'Rodrigo Espinoza',    evento: 'XCO Hermosillo',     categoria: 'Master',    pista: 'Cerro de la Silla', fecha: '2026-03-19', estatus: 'Pendiente' },
-    { dorsal: 20, deportista: 'Natalia Ibáñez',      evento: 'Enduro Nogales',     categoria: 'Junior',    pista: 'La Rumorosa',       fecha: '2026-03-19', estatus: 'Confirmado' },
-    { dorsal: 21, deportista: 'Pablo Contreras',     evento: 'DH Sierra Madre',    categoria: 'Elite',     pista: 'Sierra Fría',       fecha: '2026-03-19', estatus: 'Confirmado' },
-    { dorsal: 22, deportista: 'Lucía Arriaga',       evento: 'XCO Hermosillo',     categoria: 'Sub-23',    pista: 'Cerro de la Silla', fecha: '2026-03-20', estatus: 'Pendiente' },
-    { dorsal: 23, deportista: 'Emilio Vargas',       evento: 'Enduro Nogales',     categoria: 'Master',    pista: 'La Rumorosa',       fecha: '2026-03-20', estatus: 'Confirmado' },
-    { dorsal: 24, deportista: 'Carolina Blanco',     evento: 'Cross Country Ures', categoria: 'Elite',     pista: 'Monte Albán',       fecha: '2026-03-20', estatus: 'Pendiente' },
-];
-
 /* ────────────────────────────────────────────────────────────
    ESTADO DE LA PAGINACIÓN
 ──────────────────────────────────────────────────────────── */
@@ -942,6 +915,7 @@ document.addEventListener('DOMContentLoaded', function() {
     renderInscripciones();
 });
 </script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -967,11 +941,42 @@ document.addEventListener('DOMContentLoaded', function() {
             limpiarURL();
         });
     }
+    if (msg === 'ok3'){
+        
+        Swal.fire({
+       
+            title: '¡Sesión cerrada!',
+            text: 'Has salido de tu cuenta de forma segura. ¡Vuelve pronto!',
+            icon: 'info',
+            confirmButtonColor: '#E8630A'
+        }).then(() => {
+            limpiarURL();
+        });
+    }
+
  function limpiarURL() {
         const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
         window.history.replaceState({}, document.title, cleanUrl);
     }
 });
+
+function confirmarCierreSesion(event) {
+    event.preventDefault(); 
+    Swal.fire({
+        title: '¿Seguro que quieres cerrar sesión?',
+        text: "Tendrás que volver a ingresar tus credenciales.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#E8630A',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, salir',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = 'cerrarSesion.php'; 
+        }
+    });
+}
 </script>
 </body>
 </html>
