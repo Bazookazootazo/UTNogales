@@ -212,68 +212,64 @@ if ($datos_usuario) {
         </header>
 
         <div class="perfil-container" style="display: flex; justify-content: center; padding: 10px;">
-    <div class="perfil-card" style="background: white; border-radius: 12px; width: 100%; max-width: 1000px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid #eee;">
+    <div class="perfil-card" style="background: white; border-radius: 12px; height: 100%; max-height: 500px; width: 100%; max-width: 950px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid #eee;">
         
-        <div style="background-color: #2f3430; padding: 1.5em; text-align: center; border-bottom: 4px solid #ff6b00;">
-            <i class="fas fa-user-circle" style="font-size: 4em; color: #ff6b00; margin-bottom: 5px;"></i>
-            <h3 style="color: white; margin: 0; font-size: 1.6em;"><?php echo $nombre_completo; ?></h3>
-            <span style="background: #ff6b00; padding: 3px 15px; border-radius: 20px; font-size: 0.75em; font-weight: bold; color: white; text-transform: uppercase; margin-top: 8px; display: inline-block;">
+        <div style="background-color: #2f3430; padding: 1.2em; text-align: center; border-bottom: 4px solid #ff6b00;">
+            <i class="fas fa-user-circle" style="font-size: 3.5em; color: #ff6b00; margin-bottom: 5px;"></i>
+            <h3 style="color: white; margin: 0; font-size: 1.5em;"><?php echo $nombre_completo; ?></h3>
+            <span style="background: #ff6b00; padding: 2px 12px; border-radius: 20px; font-size: 0.7em; font-weight: bold; color: white; text-transform: uppercase; margin-top: 5px; display: inline-block;">
                 <?php echo $rol; ?>
             </span>
         </div>   
 
-        <div style="padding: 1.5em 2.5em; background: white;">
+        <div style="padding: 1.5em 3em; background: white;">
             
-            <div style="display: flex; justify-content: space-between; gap: 20px; margin-bottom: 1.5em; border-bottom: 1px solid #f5f5f5; padding-bottom: 15px;">
+            <div style="display: flex; width: 100%; gap: 10px; border-bottom: 1px solid #f5f5f5; padding-bottom: 15px; margin-bottom: 15px;">
                 
-                <div style="flex: 0 0 25%;">
-                    <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; letter-spacing: 0.5px; display: block;">
+                <div style="width: 30%;">
+                    <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; display: block;">
                         <i class="fas fa-user" style="color: #ff6b00; margin-right: 5px;"></i> Nombre
                     </label>
-                    <p style="margin: 5px 0 0; font-size: 1.05em; color: #333; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        <?php echo $nombre_completo; ?>
-                    </p>
+                    <p style="margin: 5px 0 0; font-size: 1em; color: #333; font-weight: 500;"><?php echo $nombre_completo; ?></p>
                 </div>
 
-                <div style="flex: 0 0 45%;">
-                    <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; letter-spacing: 0.5px; display: block;">
+                <div style="width: 45%;">
+                    <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; display: block;">
                         <i class="fas fa-envelope" style="color: #ff6b00; margin-right: 5px;"></i> Correo Electrónico
                     </label>
-                    <p style="margin: 5px 0 0; font-size: 1.05em; color: #333; font-weight: 500; white-space: nowrap;">
-                        <?php echo $correo; ?>
-                    </p>
+                    <p style="margin: 5px 0 0; font-size: 1em; color: #333; font-weight: 500;"><?php echo $correo; ?></p>
                 </div>
 
-                <div style="flex: 0 0 20%;">
-                    <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; letter-spacing: 0.5px; display: block;">
+                <div style="width: 25%;">
+                    <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; display: block;">
                         <i class="fas fa-phone" style="color: #ff6b00; margin-right: 5px;"></i> Teléfono
                     </label>
-                    <p style="margin: 5px 0 0; font-size: 1.05em; color: #333; font-weight: 500;">
+                    <p style="margin: 5px 0 0; font-size: 1em; color: #333; font-weight: 500;">
                         <?php echo !empty($telefono) ? $telefono : '---'; ?>
                     </p>
                 </div>
             </div>
 
-            <div style="display: flex; gap: 40px; margin-bottom: 1.5em;">
-                <div>
+            <div style="display: flex; width: 100%; gap: 10px;">
+                <div style="width: 30%;">
                     <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; display: block;">
                         <i class="fas fa-user-tag" style="color: #ff6b00; margin-right: 5px;"></i> Rol
                     </label>
-                    <p style="margin: 5px 0 0; font-size: 1em; color: #333; font-weight: 500;"><?php echo $rol; ?></p>
+                    <p style="margin: 5px 0 0; font-size: 0.95em; color: #333; font-weight: 500;"><?php echo $rol; ?></p>
                 </div>
-                <div>
+                <div style="width: 45%;">
                     <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; display: block;">
                         <i class="fas fa-check-circle" style="color: #28a745; margin-right: 5px;"></i> Estatus
                     </label>
-                    <p style="margin: 5px 0 0; font-size: 1em; color: #28a745; font-weight: bold;">Activo</p>
+                    <p style="margin: 5px 0 0; font-size: 0.95em; color: #28a745; font-weight: bold;">Activo</p>
                 </div>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px;">
-                <a href="editar_cuenta.php" style="text-decoration: none; background: #ff6b00; color: white; padding: 8px 20px; border-radius: 6px; font-size: 0.9em; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 5px; padding-top: 120px;">
+                <a href="editar_cuenta.php" button class="btn btn-primary btn-sm" style = " background: #ff6b00; color: white; padding: 7px 18px; border-radius: 6px; font-size: 0.85em; font-weight: bold; display: flex; align-items: center; gap: 6px;">
                     <i class="fas fa-edit"></i> Editar Datos
                 </a>
-                <a href="eliminar_cuenta.php" onclick="return confirm('¿Borrar cuenta?')" style="text-decoration: none; background: #fff; color: #dc3545; border: 1.5px solid #dc3545; padding: 7px 20px; border-radius: 6px; font-size: 0.9em; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+                <a href="eliminar_cuenta.php" onclick="return confirm('¿Borrar cuenta?')"button class="btn btn-primary btn-sm"  style="background: #fff; color: #dc3545; border: 1.5px solid #dc3545; padding: 6px 18px; border-radius: 6px; font-size: 0.85em; font-weight: bold; display: flex; align-items: center; gap: 6px;">
                     <i class="fas fa-trash-alt"></i> Borrar Cuenta
                 </a>
             </div>
