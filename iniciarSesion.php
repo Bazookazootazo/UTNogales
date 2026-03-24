@@ -16,7 +16,7 @@ if (isset($_POST['submit'])) {
             if (password_verify($pass_escrita, $user['hash'])) {
                 $_SESSION['id_usuario'] = $user['id'];
                 $_SESSION['rol'] = $user['rol'];
-                header("Location: inicio.php");
+                 header("Location: inicio.php?msg=ok");
                 exit();
             } else {
                 // Esto te dirá si el hash está mal guardado
