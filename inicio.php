@@ -1,4 +1,32 @@
 <?php $pagina_actual = 'inicio'; ?>
+<?php
+session_start();
+include 'conexion.php'; 
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: registro.php");
+    exit();
+}
+$id_logueado = $_SESSION['id_usuario'];
+try {
+    $query_user = "SELECT nombreUser, apellidosUser, rol FROM usuarios WHERE numeroUser = ?";
+    $stmt = $conn->prepare($query_user);
+    $stmt->execute([$id_logueado]);
+    $datos_usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($datos_usuario) {
+        $nombre_completo = $datos_usuario['nombreUser'] . " " . $datos_usuario['apellidosUser'];
+        $rol = $datos_usuario['rol'];
+        $n = mb_substr($datos_usuario['nombreUser'], 0, 1);
+        $a = mb_substr($datos_usuario['apellidosUser'], 0, 1);
+        $iniciales = strtoupper($n . $a);
+    } else {
+        session_destroy();
+        header("Location: registro.php");
+        exit();
+    }
+} catch (PDOException $e) {
+    die("Error al obtener datos: " . $e->getMessage());
+}
+?>
 <!DOCTYPE HTML>
 <html lang="es">
 <head>
@@ -62,14 +90,12 @@
                     <span class="nav-label">Eventos y Fechas</span>
                 </a>
             </div>
-
             <div class="nav-item">
                 <a href="archivo2.php" class="nav-link <?php echo ($pagina_actual == 'inscripciones') ? 'active' : ''; ?>">
                     <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
                     <span class="nav-label">Inscripciones</span>
                 </a>
             </div>
-
             <div class="nav-item">
                 <a href="pistas.php" class="nav-link" data-page="pistas">
                     <span class="nav-icon"><i class="fas fa-map-location-dot"></i></span>
@@ -113,6 +139,7 @@
             <div class="nav-divider"></div>
 
             <!-- Administración -->
+            <?php if ($_SESSION['rol'] == 'ADMIN'): ?>
             <span class="nav-section-label">Administración</span>
 
             <div class="nav-item">
@@ -121,29 +148,24 @@
                     <span class="nav-label">Usuarios</span>
                 </a>
             </div>
-
-            <div class="nav-item">
-                <a href="#" class="nav-link" data-page="reportes">
-                    <span class="nav-icon"><i class="fas fa-file-chart-column"></i></span>
-                    <span class="nav-label">Reportes</span>
-                </a>
-            </div>
-
         </nav>
+    <?php endif; ?>
 
         <!-- Footer del Sidebar -->
         <div class="sidebar-footer">
-            <div class="sidebar-user">
-                <div class="user-avatar">JP</div>
-                <div class="user-info">
-                    <div class="user-name">Juan Pérez</div>
-                    <div class="user-role">Administrador</div>
-                </div>
-                <a href="#" title="Cerrar sesión" style="color:rgba(255,255,255,.4); transition: color .2s;">
-                    <i class="fas fa-right-from-bracket"></i>
-                </a>
-            </div>
-        </div>
+    <div class="sidebar-user">
+        <div class="user-avatar"><?php echo $iniciales; ?></div>
+        
+        <a href="cuenta.php" class="user-info">
+            <div class="user-name"><?php echo $nombre_completo; ?></div>
+            <div class="user-role"><?php echo $rol; ?></div>
+        </a>
+        
+        <a href="cerrarSesion.php" title="Cerrar sesión" style="color:rgba(255,255,255,.4); transition: color .2s;">
+            <i class="fas fa-right-from-bracket"></i>
+        </a>
+    </div>
+</div>
 
     </aside>
 
@@ -913,9 +935,7 @@ function formatFecha(iso) {
     return `${parseInt(d)} ${meses[parseInt(m)-1]} ${y}`;
 }
 
-/* ────────────────────────────────────────────────────────────
-   INIT
-──────────────────────────────────────────────────────────── */
+
 document.addEventListener('DOMContentLoaded', function() {
     renderEventos();
     renderRanking();
@@ -929,16 +949,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (msg === 'ok') {
         Swal.fire({
-            title: '¡Sesión Iniciada!',
-            text: 'Bienvenido a la plataforma de gestión de eventos MTB. Puedes comenzar a explorar los eventos disponibles y gestionar tus inscripciones.',
+            title: '¡Bienvenido a MTB nogales!',
+            text: 'se ha iniciado sesion correctamente.',
             icon: 'success',
-            confirmButtonColor: '#008170'
+            confirmButtonColor: '#E8630A'
         }).then(() => {
             limpiarURL();
         });
     }
-    // Función para quitar el ?msg=... de la barra de direcciones
-    function limpiarURL() {
+    if (msg === 'ok2'){
+        Sawl.fire({
+            title: '¡Cuenta creada exitosamente!',
+            text: 'Bienvenido a MTB nogales, ahora puedes iniciar sesión con tus credenciales.',
+            icon: 'success',
+            confirmButtonColor: '#E8630A'
+        }).then(() => {
+            limpiarURL();
+        });
+    }
+ function limpiarURL() {
         const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
         window.history.replaceState({}, document.title, cleanUrl);
     }

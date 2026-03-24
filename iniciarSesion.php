@@ -1,31 +1,32 @@
 <?php
 session_start();
-require 'conexion.php'; 
+require 'conexion.php';
 
 if (isset($_POST['submit'])) {
-    $correo = $_POST['nombre'] ?? ''; 
-    $pass_escrita = $_POST['contraseña'] ?? '';
+    $correo = $_POST['nombre'] ?? '';
+    $pass_input = $_POST['contraseña'] ?? '';
 
     try {
-        $stmt = $conn->prepare("CALL sp_login(?)");
+        $stmt = $conn->prepare("SELECT contraseñaUser FROM usuarios WHERE correoUser = ?");
         $stmt->execute([$correo]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+        $es_valida = ($user_data && password_verify($pass_input, $user_data['contraseñaUser']));
 
-        if ($user) {
-            // VERIFICACIÓN TÉCNICA
-            if (password_verify($pass_escrita, $user['hash'])) {
-                $_SESSION['id_usuario'] = $user['id'];
-                $_SESSION['rol'] = $user['rol'];
-                 header("Location: inicio.php?msg=ok");
-                exit();
-            } else {
-                // Esto te dirá si el hash está mal guardado
-                header("Location: index.php?error=La contraseña no coincide con el hash guardado.");
-            }
+        $stmt = $conn->prepare("CALL sp_login(?, ?)");
+        $stmt->execute([$correo, $es_valida ? 1 : 0]);
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($res['estado'] === 'EXITO') {
+            $_SESSION['id_usuario'] = $res['id'];
+            $_SESSION['rol'] = $res['rol'];
+            header("Location: inicio.php?msg=ok");
+        exit();
         } else {
-            header("Location: index.php?error=El correo no existe en la BD.");
+            header("Location: index.php?error=" . urlencode($res['mensaje']));
         }
+        exit();
+
     } catch (PDOException $e) {
-        die("Error de SQL: " . $e->getMessage());
+        header("Location: index.php?error=Error de sistema.");
     }
 }
