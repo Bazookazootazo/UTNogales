@@ -42,11 +42,37 @@ if ($datos_usuario) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="mtb-dashboard.css" />
     <style>
-        .sidebar-user { display: flex; align-items: center; padding: 12px; border-radius: 8px; transition: all 0.3s ease; cursor: pointer; color: white; text-decoration: none; }
-        .sidebar-user.active { background-color: rgba(255, 107, 0, 0.15); border-left: 3px solid #ff6b00; }
-        .sidebar-user.active .user-name { color: #ff6b00; font-weight: bold; }
-        .logout-icon { color: rgba(255,255,255,.4); transition: color .2s; margin-left: auto; }
-        .logout-icon:hover { color: #ff4444; }
+        /* Estilo base del footer user */
+.sidebar-user {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    color: white; /* O el color de tu texto */
+}
+
+/* Estado activo (Naranja) */
+.sidebar-user.active {
+    background-color: rgba(255, 107, 0, 0.15); /* Fondo naranja suave */
+    border-left: 3px solid #ff6b00; /* Línea naranja intensa */
+}
+
+.sidebar-user.active .user-name {
+    color: #ff6b00; /* Texto del nombre en naranja */
+    font-weight: bold;
+}
+
+.logout-icon {
+    color: rgba(255,255,255,.4);
+    transition: color .2s;
+    margin-left: auto;
+}
+
+.logout-icon:hover {
+    color: #ff4444; /* Rojo al pasar el mouse por cerrar sesión */
+}
 
         /* FIX: Forzamos el layout de la app para que no centre la barra */
         .mtb-app {
@@ -184,18 +210,21 @@ if ($datos_usuario) {
 
         <!-- Footer del Sidebar -->
         <div class="sidebar-footer">
-    <div class="sidebar-user">
+    <a href="cuenta.php" class="sidebar-user <?php echo ($pagina_actual == 'cuenta') ? 'active' : ''; ?>" style="text-decoration: none;">
+        
         <div class="user-avatar"><?php echo $iniciales; ?></div>
         
-        <a href="cuenta.php" class="user-info">
+        <div class="user-info">
             <div class="user-name"><?php echo $nombre_completo; ?></div>
             <div class="user-role"><?php echo $rol; ?></div>
-        </a>
+        </div>
         
-        <a href="cerrarSesion.php" title="Cerrar sesión" style="color:rgba(255,255,255,.4); transition: color .2s;">
-            <i class="fas fa-right-from-bracket"></i>
-        </a>
-    </div>
+        <object>
+            <a href="cerrarSesion.php" title="Cerrar sesión" class="logout-icon">
+                <i class="fas fa-right-from-bracket"></i>
+            </a>
+        </object>
+    </a>
 </div>
 
     </aside>
@@ -266,19 +295,21 @@ if ($datos_usuario) {
             </div>
 
             <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 5px; padding-top: 120px;">
-                <a href="editar_cuenta.php" button class="btn btn-primary btn-sm" style = " background: #ff6b00; color: white; padding: 7px 18px; border-radius: 6px; font-size: 0.85em; font-weight: bold; display: flex; align-items: center; gap: 6px;">
-                    <i class="fas fa-edit"></i> Editar Datos
-                </a>
-                <a href="eliminar_cuenta.php" onclick="return confirm('¿Borrar cuenta?')"button class="btn btn-primary btn-sm"  style="background: #fff; color: #dc3545; border: 1.5px solid #dc3545; padding: 6px 18px; border-radius: 6px; font-size: 0.85em; font-weight: bold; display: flex; align-items: center; gap: 6px;">
-                    <i class="fas fa-trash-alt"></i> Borrar Cuenta
-                </a>
-            </div>
+    <a href="editar_cuenta.php" style="background: #ff6b00; color: white; padding: 7px 18px; border-radius: 6px; font-size: 0.85em; font-weight: bold; display: flex; align-items: center; gap: 6px; text-decoration: none;">
+        <i class="fas fa-edit"></i> Editar Datos
+    </a>
+
+    <button onclick="confirmarEliminar('<?php echo $id_logueado; ?>', '<?php echo $rol; ?>')" 
+            style="background: #fff; color: #dc3545; border: 1.5px solid #dc3545; padding: 6px 18px; border-radius: 6px; font-size: 0.85em; font-weight: bold; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+        <i class="fas fa-trash-alt"></i> Borrar Cuenta
+    </button>
+</div>
         </div>
     </div>
 </div>
     </main>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // JS para el sidebar
     const toggleBtn = document.getElementById('toggleSidebar');
     if(toggleBtn) {
         toggleBtn.addEventListener('click', function() {
@@ -286,7 +317,34 @@ if ($datos_usuario) {
             document.getElementById('sidebarOverlay').classList.toggle('active');
         });
     }
-</script>
+function confirmarEliminar(id, rol) {
+    console.log("ID recibido:", id, "Rol recibido:", rol);
 
+    if (rol === 'ADMIN') {
+        Swal.fire({
+            title: 'No se puede realizar ese movimiento',
+            text: 'Como Administrador, no puedes eliminar tu propia cuenta por seguridad.',
+            icon: 'error',
+            confirmButtonColor: '#ff6b00'
+        });
+        return; 
+    }
+
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "Tu cuenta será eliminada permanentemente. Esta acción no se puede deshacer.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ff6b00',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `borrarUsuario.php?numeroUser=${id}`;
+        }
+    });
+}
+</script>
 </body>
 </html>
