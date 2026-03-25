@@ -11,7 +11,7 @@ if (!isset($_SESSION['id_usuario'])) {
 $id_logueado = $_SESSION['id_usuario'];
 
 try {
-   $query_user = "SELECT nombreUser, apellidosUser, correoUser, telefonoUser, rol, ultimoAcceso FROM usuarios WHERE numeroUser = ?";
+   $query_user = "SELECT nombreUser, apellidosUser, correoUser, telefonoUser, rol, ultimoAcceso, estatus FROM usuarios WHERE numeroUser = ?";
 $stmt = $conn->prepare($query_user);
 $stmt->execute([$id_logueado]);
 $datos_usuario = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -20,7 +20,8 @@ if ($datos_usuario) {
     $nombre_completo = $datos_usuario['nombreUser'] . " " . $datos_usuario['apellidosUser'];
     $correo = $datos_usuario['correoUser'];
     $telefono = $datos_usuario['telefonoUser'];
-    $rol = $datos_usuario['rol']; // Nuevo
+    $rol = $datos_usuario['rol'];
+    $estatus = $datos_usuario['estatus'];
         $n = mb_substr($datos_usuario['nombreUser'], 0, 1);
         $a = mb_substr($datos_usuario['apellidosUser'], 0, 1);
         $iniciales = strtoupper($n . $a);
@@ -290,24 +291,77 @@ if ($datos_usuario) {
                     <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; display: block;">
                         <i class="fas fa-check-circle" style="color: #28a745; margin-right: 5px;"></i> Estatus
                     </label>
-                    <p style="margin: 5px 0 0; font-size: 0.95em; color: #28a745; font-weight: bold;">Activo</p>
+                    <p style="margin: 5px 0 0; font-size: 0.95em; color: #28a745; font-weight: bold;"><?php echo $estatus; ?></p></p>
                 </div>
             </div>
 
             <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 5px; padding-top: 120px;">
-    <a href="editar_cuenta.php" style="background: #ff6b00; color: white; padding: 7px 18px; border-radius: 6px; font-size: 0.85em; font-weight: bold; display: flex; align-items: center; gap: 6px; text-decoration: none;">
+    <button onclick="abrirModalEditar()" button class="btn btn-primary btn-sm" style="background: #ff6b00; color: white; padding: 7px 18px; border-radius: 6px; font-size: 0.85em; font-weight: bold; display: flex; align-items: center; gap: 6px; text-decoration: none;">
         <i class="fas fa-edit"></i> Editar Datos
-    </a>
+            </button>
 
     <button onclick="confirmarEliminar('<?php echo $id_logueado; ?>', '<?php echo $rol; ?>')" 
-            style="background: #fff; color: #dc3545; border: 1.5px solid #dc3545; padding: 6px 18px; border-radius: 6px; font-size: 0.85em; font-weight: bold; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+         class="btn btn-primary btn-sm" style="background: #fff; color: #dc3545; border: 1.5px solid #dc3545; padding: 6px 18px; border-radius: 6px; font-size: 0.85em; font-weight: bold; display: flex; align-items: center; gap: 6px; cursor: pointer;">
         <i class="fas fa-trash-alt"></i> Borrar Cuenta
     </button>
 </div>
         </div>
     </div>
 </div>
-    </main>
+</main>
+
+<!-- ══════════════════════════════════════════════════════════
+     modal:editar usuarios
+══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalEditarUsuarios">
+    <div class="modal">
+        <div class="modal-header">
+            <h2><i class="fas fa-user"></i> Modificar perfil</h2>
+            <button class="modal-close" onclick="cerrarModal('modalEditarUsuarios')">
+                <i class="fas fa-xmark"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="formEvento">
+                <div class="form-group">
+                    <label class="form-label required">Nombre del Evento</label>
+                    <input type="text" class="form-control" placeholder="Ej. Enduro Copa MTB Nogales 2026" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label required">Fecha del Evento</label>
+                        <input type="date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cupo máximo</label>
+                        <input type="number" class="form-control" placeholder="Ej. 200" min="1">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">Pista</label>
+                    <select class="form-control" required>
+                        <option value="">Seleccione pista...</option>
+                        <option>La Rumorosa — Baja California</option>
+                        <option>Cerro de la Silla — NL</option>
+                        <option>Sierra Fría — Aguascalientes</option>
+                        <option>Monte Albán — Oaxaca</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descripción</label>
+                    <textarea class="form-control" placeholder="Modalidad, desnivel, distancia..."></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="cerrarModal('modalEditarUsuarios')">Cancelar</button>
+            <button class="btn btn-primary" onclick="cerrarModal('modalEditarUsuarios'); showToast('Usuario editado correctamente', 'success')">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     const toggleBtn = document.getElementById('toggleSidebar');
@@ -332,7 +386,7 @@ function confirmarEliminar(id, rol) {
 
     Swal.fire({
         title: '¿Estás seguro?',
-        text: "Tu cuenta será eliminada permanentemente. Esta acción no se puede deshacer.",
+        text: "Tu cuenta será Desactivada. Podras reactivarla en un lapzo de 30 dias.",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ff6b00',
@@ -341,10 +395,25 @@ function confirmarEliminar(id, rol) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = `borrarUsuario.php?numeroUser=${id}`;
+            window.location.href = `dar_de_baja_cuenta.php?numeroUser=${id}`;
         }
     });
 }
+
+function abrirModal(id) {
+    const overlay = document.getElementById(id);
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function cerrarModal(id) {
+    const overlay = document.getElementById(id);
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function abrirModalEditar() { abrirModal('modalEditarUsuarios'); }
+
 </script>
 </body>
 </html>

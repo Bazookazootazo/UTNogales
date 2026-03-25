@@ -1,9 +1,8 @@
 <?php
-// conexion.php
 $host = "localhost";
 $db   = "mtbnog";
 $user = "root";
-$pass = ""; // En XAMPP suele estar vacío
+$pass = "";
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
@@ -14,9 +13,12 @@ $options = [
 ];
 
 try {
-     // AQUÍ SE DEFINE $conn
      $conn = new PDO($dsn, $user, $pass, $options);
+     $query_limpieza = "DELETE FROM usuarios WHERE estatus = 'INACTIVO' AND fecha_baja <= DATE_SUB(NOW(), INTERVAL 30 DAY)";
+     $conn->exec($query_limpieza);
+
 } catch (\PDOException $e) {
      throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
+$con = mysqli_connect($host, $user, $pass, $db); 
 ?>
