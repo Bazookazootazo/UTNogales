@@ -54,19 +54,40 @@
         <div class="sidebar-footer">
 
             <div class="sidebar-user">
+    <div class="user-avatar"><?php echo isset($iniciales) ? $iniciales : 'U'; ?></div>
 
-                <div class="user-avatar"><?php echo isset($iniciales) ? $iniciales : 'U'; ?></div>
+    <a href="cuenta.php" class="user-info">
+        <div class="user-name"><?php echo isset($nombre_completo) ? htmlspecialchars($nombre_completo) : 'Usuario'; ?></div>
+        <div class="user-role"><?php echo isset($rol) ? htmlspecialchars($rol) : 'Rol'; ?></div>
+    </a>
 
-                <a href="cuenta.php" class="user-info">
-                    <div class="user-name"><?php echo isset($nombre_completo) ? $nombre_completo : 'Usuario'; ?></div>
-                    <div class="user-role"><?php echo isset($rol) ? $rol : 'Rol'; ?></div>
-                </a>
-
-                <a href="#" onclick="confirmarCierreSesion(event)" title="Cerrar sesión" style="color:rgba(255,255,255,.4);">
-                    <i class="fas fa-right-from-bracket"></i>
-                </a>
-                
-            </div>
+    <a href="#" onclick="confirmarCierreSesion(event)" title="Cerrar sesión" style="color:rgba(255,255,255,.4); cursor:pointer;">
+        <i class="fas fa-right-from-bracket"></i>
+    </a>
+</div>
         </div>
 
     </aside>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmarCierreSesion(event) {
+    event.preventDefault(); // Evita que la página salte al inicio (#)
+
+    Swal.fire({
+        title: '¿Cerrar sesión?',
+        text: "Tendrás que volver a ingresar tus credenciales.",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#ff6b00',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, salir',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // USAMOS RUTA RELATIVA SEGURA
+            // Esto funcionará siempre que estés en la raíz (inicio.php, cuenta.php, etc.)
+            window.location.href = "actions/cerrarSesion.php";
+        }
+    });
+}
+</script>

@@ -47,61 +47,6 @@ $id_check = $_SESSION['id_usuario'];
     }
 ?>
     <?php include_once 'includes/header_sidebar.php'; ?>
-    <style>
-        /* Estilo base del footer user */
-.sidebar-user {
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    border-radius: var(--radius-md);
-    transition: all 0.3s ease;
-    cursor: pointer;
-    color: white; 
-}
-
-.sidebar-user.active {
-    background-color: rgba(255, 107, 0, 0.15); 
-    border-left: 3px solid #ff6b00;
-}
-
-.sidebar-user.active .user-name {
-    color: #ff6b00;
-    font-weight: bold;
-}
-
-.logout-icon {
-    color: rgba(255,255,255,.4);
-    transition: color .2s;
-    margin-left: auto;
-}
-
-.logout-icon:hover {
-    color: #ff4444; 
-}
-
-        .mtb-app {
-            display: flex;
-            width: 100%;
-            min-height: 100vh;
-        }
-
-        .mtb-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-            background-color: #f4f7f6;
-        }
-
-        .perfil-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-        }
-    </style>
-
     <main class="mtb-content">
         
         <header class="mtb-topbar" style="background: #fff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0;">
@@ -242,8 +187,6 @@ $id_check = $_SESSION['id_usuario'];
         });
     }
 function confirmarEliminar(id, rol) {
-    console.log("ID recibido:", id, "Rol recibido:", rol);
-
     if (rol === 'ADMIN') {
         Swal.fire({
             title: 'No se puede realizar ese movimiento',
@@ -256,7 +199,7 @@ function confirmarEliminar(id, rol) {
 
     Swal.fire({
         title: '¿Estás seguro?',
-        text: "Tu cuenta será Desactivada. Podras reactivarla en un lapzo de 30 dias, de no ser asi, se dara de baja del sistema.",
+        text: "Tu cuenta será Desactivada.",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ff6b00',
@@ -265,7 +208,9 @@ function confirmarEliminar(id, rol) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = `actions/dar_de_baja_cuenta.php?numeroUser=${id}`;
+            // Esta línea detecta si estás en mtbNogales o solo en UTNogales
+            const rootPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+            window.location.href = rootPath + "/actions/dar_de_baja_cuenta.php?numeroUser=" + id;
         }
     });
 }
@@ -328,6 +273,28 @@ function checarEstatusVivo() {
 
 // Ejecutar cada 5 segundos (5000 milisegundos)
 setInterval(checarEstatusVivo, 5000);
+
+// Agrega esto debajo de tu función confirmarEliminar en cuenta.php
+function confirmarCierreSesion(event) {
+    if (event) event.preventDefault();
+
+    Swal.fire({
+        title: '¿Cerrar sesión?',
+        text: "Tendrás que volver a ingresar tus credenciales.",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#ff6b00',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, salir',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Usamos la ruta que ya comprobamos que te funciona
+            window.location.href = "actions/cerrarSesion.php";
+        }
+    });
+}
 </script>
+
 </body>
 </html>
