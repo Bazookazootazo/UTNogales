@@ -322,40 +322,37 @@ if ($datos_usuario) {
             </button>
         </div>
         <div class="modal-body">
-            <form id="formEvento">
+            <form id="formEditarPerfil" method="POST" action="actualizar_perfil.php">
                 <div class="form-group">
-                    <label class="form-label required">Nombre del Evento</label>
-                    <input type="text" class="form-control" placeholder="Ej. Enduro Copa MTB Nogales 2026" required>
+                    <label class="form-label required">Nombres</label>
+                    <input type="text" name="nuevo_nombre" class="form-control" value="<?php echo $datos_usuario['nombreUser']; ?>" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label required">Fecha del Evento</label>
-                        <input type="date" class="form-control" required>
+                        <label class="form-label required">Apellidos</label>
+                        <input type="text" name="nuevo_apellido" class="form-control" value="<?php echo $datos_usuario['apellidosUser']; ?>" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Cupo máximo</label>
-                        <input type="number" class="form-control" placeholder="Ej. 200" min="1">
+                        <label class="form-label">Correo electrónico</label>
+                        <input type="email" name="nuevo_correo" class="form-control" value="<?php echo $correo; ?>" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label required">Pista</label>
-                    <select class="form-control" required>
-                        <option value="">Seleccione pista...</option>
-                        <option>La Rumorosa — Baja California</option>
-                        <option>Cerro de la Silla — NL</option>
-                        <option>Sierra Fría — Aguascalientes</option>
-                        <option>Monte Albán — Oaxaca</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Descripción</label>
-                    <textarea class="form-control" placeholder="Modalidad, desnivel, distancia..."></textarea>
-                </div>
+    <label class="form-label">Número de teléfono</label>
+    <input type="text" 
+           name="nuevo_telefono" 
+           class="form-control" 
+           value="<?php echo $telefono; ?>" 
+           placeholder="Ej. 631 7262 232"
+           pattern="[0-9]{8,15}" 
+           title="El teléfono debe tener entre 8 y 15 números"
+           oninput="this.value = this.value.replace(/[^0-9]/g, '');"> 
+           </div>
             </form>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="cerrarModal('modalEditarUsuarios')">Cancelar</button>
-            <button class="btn btn-primary" onclick="cerrarModal('modalEditarUsuarios'); showToast('Usuario editado correctamente', 'success')">
+            <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalEditarUsuarios')">Cancelar</button>
+            <button type="submit" form="formEditarPerfil" class="btn btn-primary" style="background: #ff6b00; border: none;">
                 <i class="fas fa-save"></i> Guardar Cambios
             </button>
         </div>
@@ -414,6 +411,35 @@ function cerrarModal(id) {
 
 function abrirModalEditar() { abrirModal('modalEditarUsuarios'); }
 
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const msj = urlParams.get('msj');
+    const errorText = urlParams.get('error_text');
+
+    if (msj === 'edit_ok') {
+        Swal.fire({
+            icon: 'success',
+            title: '¡Actualizado!',
+            text: 'Tus datos se guardaron correctamente.',
+            confirmButtonColor: '#ff6b00'
+        });
+    }
+
+    if (msj === 'edit_error') {
+        Swal.fire({
+            icon: 'error',
+            title: 'No se pudo actualizar',
+            text: errorText ? decodeURIComponent(errorText) : 'Ocurrió un error inesperado.',
+            confirmButtonColor: '#ff6b00'
+        });
+    }
+
+    if (msj) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+});
 </script>
 </body>
 </html>
