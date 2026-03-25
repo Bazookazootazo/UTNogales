@@ -38,6 +38,18 @@
                     <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
                     <span class="nav-label">Inscripciones</span>
                 </a>
+                <a href="carreras.php" class="nav-link <?php echo ($pagina_actual == 'carreras') ? 'active' : ''; ?>">
+                    <span class="nav-icon"><i class="fas fa-flag-checkered"></i></span>
+                    <span class="nav-label">Carreras</span>
+                </a>
+                <a href="pistas.php" class="nav-link <?php echo ($pagina_actual == 'pistas') ? 'active' : ''; ?>">
+                    <span class="nav-icon"><i class="fas fa-route"></i></span>
+                    <span class="nav-label">Pistas</span>
+                </a>
+                <a href="patrocinadores.php" class="nav-link <?php echo ($pagina_actual == 'patrocinadores') ? 'active' : ''; ?>">
+                    <span class="nav-icon"><i class="fas fa-handshake"></i></span>
+                    <span class="nav-label">Patrocinadores</span>
+                </a>
             </div>
             <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] == 'ADMIN'): ?>
 <div class="nav-divider"></div>

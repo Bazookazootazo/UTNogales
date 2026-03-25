@@ -1,4 +1,4 @@
-<?php $pagina_actual = 'inicio'; ?>
+<?php $pagina_actual = 'patrocinadores'; ?>
 <?php
 session_start();
 include 'config/conexion.php'; 
@@ -6,6 +6,7 @@ if (!isset($_SESSION['id_usuario'])) {
     header("Location: registro.php");
     exit();
 }
+
 $id_logueado = $_SESSION['id_usuario'];
 try {
     $query_user = "SELECT nombreUser, apellidosUser, rol FROM usuarios WHERE numeroUser = ?";
@@ -26,128 +27,21 @@ try {
 } catch (PDOException $e) {
     die("Error al obtener datos: " . $e->getMessage());
 }
+$id_check = $_SESSION['id_usuario'];
+    
+    $stmt_check = $conn->prepare("SELECT estatus FROM usuarios WHERE numeroUser = ?");
+    $stmt_check->execute([$id_check]);
+    $user_status = $stmt_check->fetch(PDO::FETCH_ASSOC);
+
+    if (!$user_status || strtoupper($user_status['estatus']) === 'Inactivo') {
+        session_unset();
+        session_destroy();
+        header("Location: index.php?error=" . urlencode("Tu sesión ha expirado o tu cuenta ha sido desactivada."));
+        exit();
+    }
 ?>
-<!DOCTYPE HTML>
-<html lang="es">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <title>MTB Sistema — Dashboard</title>
 
-    <!-- Font Awesome 6 (CDN) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-
-    <!-- Hoja de estilos separada del dashboard MTB -->
-    <link rel="stylesheet" href="mtb-dashboard.css" />
-</head>
-<body>
-
-<!-- ══════════════════════════════════════════════════════════
-     APP SHELL
-══════════════════════════════════════════════════════════ -->
-<div class="mtb-app">
-
-    <!-- ── OVERLAY para móvil (cierra el sidebar) ── -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- ════════════════════════════════════════════════
-         SIDEBAR
-    ════════════════════════════════════════════════ -->
-    <aside class="mtb-sidebar" id="mtbSidebar">
-
-        <!-- Marca / Logo -->
-        <div class="sidebar-brand">
-            <div class="sidebar-brand-icon">
-                <i class="fas fa-person-biking"></i>
-            </div>
-            <div class="sidebar-brand-text">
-                <span class="brand-name">MTB</span>
-                <span class="brand-sub">Mountain Bike System</span>
-            </div>
-        </div>
-
-        <!-- Navegación -->
-        <nav class="sidebar-nav">
-
-            <!-- Principal -->
-            <span class="nav-section-label">Principal</span>
-
-            <div class="nav-item">
-               <a href="inicio.php" class="nav-link <?php echo ($pagina_actual == 'inicio') ? 'active' : ''; ?>">
-    <span class="nav-icon"><i class="fas fa-th-large"></i></span>
-    <span class="nav-label">Dashboard</span>
-</a>
-            </div>
-
-            <div class="nav-divider"></div>
-
-            <!-- Gestión -->
-            <span class="nav-section-label">Gestión</span>
-
-            <div class="nav-item">
-                <a href="#" class="nav-link" data-page="eventos">
-                    <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
-                    <span class="nav-label">Eventos y Fechas</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="archivo2.php" class="nav-link <?php echo ($pagina_actual == 'inscripciones') ? 'active' : ''; ?>">
-                    <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
-                    <span class="nav-label">Inscripciones</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="pistas.php" class="nav-link" data-page="pistas">
-                    <span class="nav-icon"><i class="fas fa-map-location-dot"></i></span>
-                    <span class="nav-label">Pistas</span>
-                </a>
-            </div>
-
-            <div class="nav-item">
-                <a href="#" class="nav-link" data-page="deportistas">
-                    <span class="nav-icon"><i class="fas fa-users"></i></span>
-                    <span class="nav-label">Deportistas</span>
-                </a>
-            </div>
-
-            <div class="nav-item">
-                <a href="#" class="nav-link" data-page="categorias">
-                    <span class="nav-icon"><i class="fas fa-layer-group"></i></span>
-                    <span class="nav-label">Categorías</span>
-                </a>
-            </div>
-
-            <div class="nav-divider"></div>
-            <!-- Administración -->
-            <?php if ($_SESSION['rol'] == 'ADMIN'): ?>
-            <span class="nav-section-label">Administración</span>
-               <div class="nav-item">
-                  <a href="administracion_de_usuarios.php" 
-                  class="nav-link"  
-                  data-page="usuarios">
-               <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
-            <span class="nav-label">Usuarios</span>
-        </a>
-    </div>
-    <?php endif; ?>
-
-        <!-- Footer del Sidebar -->
-        <div class="sidebar-footer">
-    <div class="sidebar-user">
-        <div class="user-avatar"><?php echo $iniciales; ?></div>
-        
-        <a href="cuenta.php" class="user-info">
-            <div class="user-name"><?php echo $nombre_completo; ?></div>
-            <div class="user-role"><?php echo $rol; ?></div>
-        </a>
-        
-        <a href="#" onclick="confirmarCierreSesion(event)" title="Cerrar sesión" style="color:rgba(255,255,255,.4); transition: color .2s;">
-            <i class="fas fa-right-from-bracket"></i>
-        </a>
-    </div>
-</div>
-
-    </aside>
+<?php include_once 'includes/header_sidebar.php'; ?>
 
     <!-- ════════════════════════════════════════════════
          CONTENIDO PRINCIPAL
@@ -157,27 +51,22 @@ try {
         <!-- ── TOP BAR ── -->
         <header class="mtb-topbar">
             <div class="topbar-left">
-                <!-- Botón hamburguesa (visible solo en móvil) -->
                 <button class="topbar-toggle" id="toggleSidebar" aria-label="Abrir menú">
                     <i class="fas fa-bars"></i>
                 </button>
                 <div>
-                    <div class="topbar-title">Dashboard</div>
-                    <div class="topbar-breadcrumb">Inicio › Resumen general</div>
+                    <div class="topbar-title">Patrocinadores</div>
+                    <div class="topbar-breadcrumb">Patrocinadores › Resumen general</div>
                 </div>
             </div>
             <div class="topbar-right">
-                <!-- Botón de acción rápida -->
-                <button class="topbar-action-btn" onclick="abrirModalInscripcion()">
-                    <i class="fas fa-plus"></i>
-                    Nueva Inscripción
+                <button class="topbar-action-btn" onclick="abrirModalPatrocinador()">
+                    <i class="fas fa-plus"></i> Registrar nuevo patrocinador
                 </button>
-                <!-- Notificaciones -->
                 <button class="topbar-icon-btn" title="Notificaciones">
                     <i class="fas fa-bell"></i>
                     <span class="topbar-badge"></span>
                 </button>
-                <!-- Configuración -->
                 <button class="topbar-icon-btn" title="Configuración">
                     <i class="fas fa-gear"></i>
                 </button>
@@ -211,7 +100,9 @@ try {
                         <div class="stat-card-value">12</div>
                         <div class="stat-card-label">Eventos en temporada</div>
                     </div>
-                    <div class="stat-card-trend up"><i class="fas fa-arrow-up"></i> +2 vs. año anterior</div>
+                    <div class="stat-card-trend up">
+                        <i class="fas fa-arrow-up"></i> +2 vs. año anterior
+                    </div>
                 </div>
 
                 <div class="stat-card success animate-in">
@@ -220,7 +111,9 @@ try {
                         <div class="stat-card-value">348</div>
                         <div class="stat-card-label">Deportistas activos</div>
                     </div>
-                    <div class="stat-card-trend up"><i class="fas fa-arrow-up"></i> +47 nuevos</div>
+                    <div class="stat-card-trend up">
+                        <i class="fas fa-arrow-up"></i> +47 nuevos
+                    </div>
                 </div>
 
                 <div class="stat-card warning animate-in">
@@ -229,7 +122,9 @@ try {
                         <div class="stat-card-value">94</div>
                         <div class="stat-card-label">Inscripciones pendientes</div>
                     </div>
-                    <div class="stat-card-trend down"><i class="fas fa-arrow-down"></i> 3 vencidas</div>
+                    <div class="stat-card-trend down">
+                        <i class="fas fa-arrow-down"></i> 3 vencidas
+                    </div>
                 </div>
 
                 <div class="stat-card info animate-in">
@@ -238,23 +133,27 @@ try {
                         <div class="stat-card-value">7</div>
                         <div class="stat-card-label">Pistas registradas</div>
                     </div>
-                    <div class="stat-card-trend up"><i class="fas fa-arrow-up"></i> 1 nueva este mes</div>
+                    <div class="stat-card-trend up">
+                        <i class="fas fa-arrow-up"></i> 1 nueva este mes
+                    </div>
                 </div>
             </div>
 
             <!-- ── FILA: PRÓXIMOS EVENTOS + RANKING ── -->
-            <div style="display:grid; grid-template-columns: 1fr 380px; gap: 24px; margin-bottom: 24px;">
+            <div style="display:grid; grid-template-columns:1fr 380px; gap:24px; margin-bottom:24px;">
 
                 <!-- PRÓXIMOS EVENTOS -->
                 <div class="card animate-in">
                     <div class="card-header">
                         <div>
-                            <div class="card-title"><i class="fas fa-calendar-days"></i> Próximos Eventos</div>
+                            <div class="card-title">
+                                <i class="fas fa-calendar-days"></i> Próximos Eventos
+                            </div>
                             <div class="card-subtitle">Calendario de la temporada 2026</div>
                         </div>
                         <button class="btn btn-outline btn-sm">Ver todos</button>
                     </div>
-                    <div class="card-body" style="padding: 0;">
+                    <div class="card-body" style="padding:0;">
                         <table class="mtb-table">
                             <thead>
                                 <tr>
@@ -265,9 +164,7 @@ try {
                                     <th>Estatus</th>
                                 </tr>
                             </thead>
-                            <tbody id="tbodyEventos">
-                                <!-- Generado por JS -->
-                            </tbody>
+                            <tbody id="tbodyEventos"><!-- Generado por JS --></tbody>
                         </table>
                     </div>
                 </div>
@@ -275,26 +172,36 @@ try {
                 <!-- RANKING TOP 5 -->
                 <div class="card animate-in">
                     <div class="card-header">
-                        <div class="card-title"><i class="fas fa-trophy"></i> Top 5 Temporada</div>
+                        <div class="card-title">
+                            <i class="fas fa-trophy"></i> Top 5 Temporada
+                        </div>
                     </div>
                     <div class="card-body">
-                        <div id="rankingList" style="display:flex; flex-direction:column; gap:12px;">
+                        <div id="rankingList"
+                             style="display:flex; flex-direction:column; gap:12px;">
                             <!-- Generado por JS -->
                         </div>
                     </div>
                     <div class="card-footer">
-                        <span style="font-size:.8rem; color:var(--mtb-gray-600);">Actualizado: hoy</span>
-                        <button class="btn btn-ghost btn-sm">Ver ranking completo <i class="fas fa-arrow-right"></i></button>
+                        <span style="font-size:.8rem; color:var(--mtb-gray-600);">
+                            Actualizado: hoy
+                        </span>
+                        <button class="btn btn-ghost btn-sm">
+                            Ver ranking completo <i class="fas fa-arrow-right"></i>
+                        </button>
                     </div>
                 </div>
 
             </div>
+            <!-- FIN FILA EVENTOS + RANKING -->
 
             <!-- ── TABLA DE INSCRIPCIONES ── -->
             <div class="card animate-in">
                 <div class="card-header">
                     <div>
-                        <div class="card-title"><i class="fas fa-clipboard-list"></i> Control de Inscripciones</div>
+                        <div class="card-title">
+                            <i class="fas fa-clipboard-list"></i> Control de Inscripciones
+                        </div>
                         <div class="card-subtitle">Gestión de participantes por evento</div>
                     </div>
                     <button class="btn btn-primary btn-sm" onclick="abrirModalInscripcion()">
@@ -303,8 +210,9 @@ try {
                 </div>
 
                 <!-- Filtros -->
-                <div style="padding: 0 24px;">
-                    <div class="filters-bar" style="margin-bottom:0; border-radius: var(--radius-md);">
+                <div style="padding:0 24px;">
+                    <div class="filters-bar"
+                         style="margin-bottom:0; border-radius:var(--radius-md);">
                         <div class="filters-header">
                             <i class="fas fa-filter"></i> Filtrar Inscripciones
                         </div>
@@ -313,39 +221,45 @@ try {
                                 <label>Evento</label>
                                 <select id="filtroEvento" onchange="aplicarFiltros()">
                                     <option value="">Todos los eventos</option>
-                                    <option value="Enduro Nogales">Enduro Nogales</option>
-                                    <option value="XCO Hermosillo">XCO Hermosillo</option>
-                                    <option value="DH Sierra">DH Sierra</option>
+                                    <option>Enduro Nogales</option>
+                                    <option>XCO Hermosillo</option>
+                                    <option>DH Sierra</option>
                                 </select>
                             </div>
                             <div class="filter-field">
                                 <label>Categoría</label>
                                 <select id="filtroCategoria" onchange="aplicarFiltros()">
                                     <option value="">Todas</option>
-                                    <option value="Elite">Elite</option>
-                                    <option value="Sub-23">Sub-23</option>
-                                    <option value="Master">Master</option>
-                                    <option value="Junior">Junior</option>
+                                    <option>Elite</option>
+                                    <option>Sub-23</option>
+                                    <option>Master</option>
+                                    <option>Junior</option>
                                 </select>
                             </div>
                             <div class="filter-field">
                                 <label>Estatus</label>
                                 <select id="filtroEstatus" onchange="aplicarFiltros()">
                                     <option value="">Todos</option>
-                                    <option value="Confirmado">Confirmado</option>
-                                    <option value="Pendiente">Pendiente</option>
-                                    <option value="Cancelado">Cancelado</option>
+                                    <option>Confirmado</option>
+                                    <option>Pendiente</option>
+                                    <option>Cancelado</option>
                                 </select>
                             </div>
                             <div class="filter-field autocomplete-wrapper">
                                 <label>Buscar deportista</label>
                                 <div class="input-group">
-                                    <span class="input-group-icon"><i class="fas fa-search"></i></span>
-                                    <input type="text" id="buscarDeportista" class="form-control" placeholder="Nombre o número..." oninput="aplicarFiltros()">
+                                    <span class="input-group-icon">
+                                        <i class="fas fa-search"></i>
+                                    </span>
+                                    <input type="text" id="buscarDeportista"
+                                           class="form-control"
+                                           placeholder="Nombre o número..."
+                                           oninput="aplicarFiltros()">
                                 </div>
                             </div>
                             <div class="filter-actions">
-                                <button class="btn btn-secondary btn-sm" onclick="limpiarFiltros()">
+                                <button class="btn btn-secondary btn-sm"
+                                        onclick="limpiarFiltros()">
                                     <i class="fas fa-xmark"></i> Limpiar
                                 </button>
                             </div>
@@ -354,7 +268,7 @@ try {
                 </div>
 
                 <!-- Tabla -->
-                <div class="card-body" style="padding-top: 16px;">
+                <div class="card-body" style="padding-top:16px;">
                     <div class="table-wrapper">
                         <table class="mtb-table" id="tablaInscripciones">
                             <thead>
@@ -369,17 +283,18 @@ try {
                                     <th class="center">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody id="tbodyInscripciones">
-                                <!-- Generado por JS -->
-                            </tbody>
+                            <tbody id="tbodyInscripciones"><!-- Generado por JS --></tbody>
                         </table>
                     </div>
 
                     <!-- Paginación -->
                     <div class="pagination-bar" id="paginacionBar">
                         <div class="d-flex align-center gap-md">
-                            <span class="pagination-info" id="paginacionInfo">Mostrando 1–10 de 24 inscripciones</span>
-                            <select class="page-size-select" id="pageSize" onchange="cambiarTamano()">
+                            <span class="pagination-info" id="paginacionInfo">
+                                Mostrando 1–10 de 24 inscripciones
+                            </span>
+                            <select class="page-size-select" id="pageSize"
+                                    onchange="cambiarTamano()">
                                 <option value="10" selected>10 / pág.</option>
                                 <option value="25">25 / pág.</option>
                                 <option value="50">50 / pág.</option>
@@ -394,8 +309,6 @@ try {
             <!-- FIN TABLA INSCRIPCIONES -->
 
         </main>
-        <!-- FIN INNER -->
-
     </div>
     <!-- FIN CONTENT -->
 
@@ -404,84 +317,47 @@ try {
 
 
 <!-- ══════════════════════════════════════════════════════════
-     MODAL: NUEVA INSCRIPCIÓN
+     MODAL: NUEVO PATROCINADOR
 ══════════════════════════════════════════════════════════ -->
-<div class="modal-overlay" id="modalInscripcion">
-    <div class="modal modal-lg">
+<div class="modal-overlay" id="modalPatrocinador">
+    <div class="modal">
         <div class="modal-header">
-            <h2><i class="fas fa-clipboard-list"></i> Nueva Inscripción</h2>
-            <button class="modal-close" onclick="cerrarModal('modalInscripcion')">
+            <h2><i class="fas fa-handshake"></i> Nuevo Patrocinador</h2>
+            <button class="modal-close" onclick="cerrarModal('modalPatrocinador')">
                 <i class="fas fa-xmark"></i>
             </button>
         </div>
         <div class="modal-body">
-            <form id="formInscripcion" onsubmit="guardarInscripcion(event)">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label required">Deportista</label>
-                        <div class="input-group">
-                            <span class="input-group-icon"><i class="fas fa-user"></i></span>
-                            <input type="text" class="form-control" name="deportista" placeholder="Nombre completo" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label required">Número de Dorsal</label>
-                        <input type="number" class="form-control" name="dorsal" placeholder="Ej. 42" min="1" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label required">Evento</label>
-                        <select class="form-control" name="evento" required>
-                            <option value="">Seleccione evento...</option>
-                            <option>Enduro Nogales</option>
-                            <option>XCO Hermosillo</option>
-                            <option>DH Sierra Madre</option>
-                            <option>Cross Country Ures</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label required">Categoría</label>
-                        <select class="form-control" name="categoria" required>
-                            <option value="">Seleccione...</option>
-                            <option>Elite</option>
-                            <option>Sub-23</option>
-                            <option>Master A (30-39)</option>
-                            <option>Master B (40-49)</option>
-                            <option>Junior</option>
-                            <option>Femenil Elite</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label required">Pista</label>
-                        <select class="form-control" name="pista" required>
-                            <option value="">Seleccione pista...</option>
-                            <option>La Rumorosa — Baja California</option>
-                            <option>Cerro de la Silla — NL</option>
-                            <option>Sierra Fría — Aguascalientes</option>
-                            <option>Monte Albán — Oaxaca</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label required">Fecha de inscripción</label>
-                        <input type="date" class="form-control" name="fecha" required>
-                    </div>
-                </div>
+            <form id="formPatrocinador" onsubmit="event.preventDefault(); guardarPatrocinador();" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label class="form-label">Notas / Observaciones</label>
-                    <textarea class="form-control" name="notas" placeholder="Información adicional del participante..."></textarea>
+                    <label class="form-label required">Nombre de la Empresa</label>
+                    <div class="input-group">
+                        <span class="input-group-icon"><i class="fas fa-building"></i></span>
+                        <input type="text" class="form-control" name="nombrePatrocinador" placeholder="Ej. Trek Bikes" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label required">Contacto (Teléfono/Email)</label>
+                    <div class="input-group">
+                        <span class="input-group-icon"><i class="fas fa-address-book"></i></span>
+                        <input type="text" class="form-control" name="contactoPatrocinador" placeholder="Ej. contacto@marca.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required">Logo del Patrocinador</label>
+                    <input type="file" class="form-control" name="logo_archivo" accept="image/*" required>
+                    <small style="color:var(--mtb-gray-500)">Formatos permitidos: JPG, PNG. Máx 2MB.</small>
+                </div>
+
+                <div class="modal-footer" style="padding: 20px 0 0 0;">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalPatrocinador')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Guardar Patrocinador
+                    </button>
                 </div>
             </form>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="cerrarModal('modalInscripcion')">
-                <i class="fas fa-xmark"></i> Cancelar
-            </button>
-            <button class="btn btn-primary" onclick="guardarInscripcion(event)">
-                <i class="fas fa-save"></i> Guardar Inscripción
-            </button>
         </div>
     </div>
 </div>
@@ -502,7 +378,8 @@ try {
             <form id="formEvento">
                 <div class="form-group">
                     <label class="form-label required">Nombre del Evento</label>
-                    <input type="text" class="form-control" placeholder="Ej. Enduro Copa MTB Nogales 2026" required>
+                    <input type="text" class="form-control"
+                           placeholder="Ej. Enduro Copa MTB Nogales 2026" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -526,13 +403,17 @@ try {
                 </div>
                 <div class="form-group">
                     <label class="form-label">Descripción</label>
-                    <textarea class="form-control" placeholder="Modalidad, desnivel, distancia..."></textarea>
+                    <textarea class="form-control"
+                              placeholder="Modalidad, desnivel, distancia..."></textarea>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="cerrarModal('modalEvento')">Cancelar</button>
-            <button class="btn btn-primary" onclick="cerrarModal('modalEvento'); showToast('Evento creado correctamente', 'success')">
+            <button class="btn btn-secondary" onclick="cerrarModal('modalEvento')">
+                Cancelar
+            </button>
+            <button class="btn btn-primary"
+                    onclick="cerrarModal('modalEvento'); showToast('Evento creado correctamente','success')">
                 <i class="fas fa-save"></i> Crear Evento
             </button>
         </div>
@@ -541,7 +422,7 @@ try {
 
 
 <!-- ══════════════════════════════════════════════════════════
-     MODAL: DETALLE DE INSCRIPCIÓN (modo vista/edición)
+     MODAL: DETALLE DE INSCRIPCIÓN
 ══════════════════════════════════════════════════════════ -->
 <div class="modal-overlay" id="modalDetalle">
     <div class="modal">
@@ -555,7 +436,9 @@ try {
             <!-- Contenido inyectado por JS -->
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="cerrarModal('modalDetalle')">Cerrar</button>
+            <button class="btn btn-secondary" onclick="cerrarModal('modalDetalle')">
+                Cerrar
+            </button>
             <button class="btn btn-warning btn-sm">
                 <i class="fas fa-pen"></i> Editar
             </button>
@@ -775,7 +658,7 @@ function cerrarModal(id) {
     document.body.style.overflow = '';
 }
 
-function abrirModalInscripcion() { abrirModal('modalInscripcion'); }
+function abrirModalPatrocinador() { abrirModal('modalPatrocinador'); }
 function abrirModalEvento()      { abrirModal('modalEvento'); }
 
 // Cerrar modal al hacer clic en el overlay
@@ -933,6 +816,17 @@ document.addEventListener('DOMContentLoaded', function() {
             limpiarURL();
         });
     }
+    if (msg === 'bienvenido_de_nuevo_ok')
+    {
+        Swal.fire({
+            title: '¡Bienvenido de nuevo a MTB nogales!',
+            text: 'Has reactivado tu cuenta nuevamente. ¡Esperamos y disfrutes tu estadia!',
+            icon: 'success',
+            confirmButtonColor: '#E8630A'
+        }).then(() => {
+            limpiarURL();
+        });
+    }
 
  function limpiarURL() {
         const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
@@ -953,8 +847,69 @@ function confirmarCierreSesion(event) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = 'cerrarSesion.php'; 
+            window.location.href = 'actions/cerrarSesion.php'; 
         }
+    });
+}
+</script>
+<script>
+function checarEstatusVivo() {
+    fetch('verificar_estatus.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.activo === false) {
+                window.location.href = 'index.php?error=Tu cuenta ha sido desactivada.';
+            }
+        })
+        .catch(error => console.error('Error verificando sesión:', error));
+}
+
+// Ejecutar cada 5 segundos (5000 milisegundos)
+setInterval(checarEstatusVivo, 5000);
+
+function guardarPatrocinador() {
+    const form = document.getElementById('formPatrocinador');
+    const formData = new FormData(form);
+
+    fetch('actions/guardar_patrocinador.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        // Verificamos si la respuesta es un JSON válido antes de continuar
+        return response.json();
+    })
+    .then(data => {
+        // Cerramos el modal antes de mostrar la alerta
+        cerrarModal('modalPatrocinador');
+
+        if (data.status === 'success') {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Registrado!',
+                text: data.message,
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                location.reload(); 
+            });
+        } else {
+            // Aquí mostrará los errores de duplicado o formato
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atención',
+                text: data.message
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        cerrarModal('modalPatrocinador');
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de sistema',
+            text: 'La respuesta del servidor no fue válida. Revisa la consola (F12).'
+        });
     });
 }
 </script>

@@ -1,4 +1,4 @@
-<?php $pagina_actual = 'inscripciones'; ?>
+<?php $pagina_actual = 'carreras'; ?>
 <?php
 session_start();
 include 'config/conexion.php'; 
@@ -55,13 +55,13 @@ $id_check = $_SESSION['id_usuario'];
                     <i class="fas fa-bars"></i>
                 </button>
                 <div>
-                    <div class="topbar-title">Inscripciones</div>
-                    <div class="topbar-breadcrumb">Inscripciones › Resumen general</div>
+                    <div class="topbar-title">Carreras</div>
+                    <div class="topbar-breadcrumb">Carreras › Resumen general</div>
                 </div>
             </div>
             <div class="topbar-right">
                 <button class="topbar-action-btn" onclick="abrirModalInscripcion()">
-                    <i class="fas fa-plus"></i> Nueva Inscripción
+                    <i class="fas fa-plus"></i> Registrar nueva carrera
                 </button>
                 <button class="topbar-icon-btn" title="Notificaciones">
                     <i class="fas fa-bell"></i>
