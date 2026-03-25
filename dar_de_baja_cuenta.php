@@ -4,6 +4,7 @@ session_start();
 
 if (isset($_GET['numeroUser'])) {
     $idABorrar = mysqli_real_escape_string($con, $_GET['numeroUser']);
+    $nuevoEstatus = isset($_GET['nuevo_estatus']) ? mysqli_real_escape_string($con, $_GET['nuevo_estatus']) : 'Inactivo'; 
     $idSesionActual = $_SESSION['id_usuario']; 
     $rolSesion = $_SESSION['rol'];
 
@@ -12,17 +13,23 @@ if (isset($_GET['numeroUser'])) {
         exit();
     }
 
-    $fechaHoy = date("Y-m-d H:i:s");
-    $query = "UPDATE usuarios SET estatus = 'INACTIVO', fecha_baja = '$fechaHoy' WHERE numeroUser = '$idABorrar'";
+    if (strtoupper($nuevoEstatus) == 'ACTIVO') {
+        $query = "UPDATE usuarios SET estatus = 'Activo', fecha_baja = NULL WHERE numeroUser = '$idABorrar'";
+    } else {
+        $fechaHoy = date("Y-m-d H:i:s");
+        $query = "UPDATE usuarios SET estatus = 'Inactivo', fecha_baja = '$fechaHoy' WHERE numeroUser = '$idABorrar'";
+    }
+
     $result = mysqli_query($con, $query);
 
     if ($result) {
         if ($idABorrar == $idSesionActual) {
             session_destroy();
-            header("location:registro.php?msj=cuenta_desactivada");
+            header("location:index.php?msj=cuenta_desactivada");
             exit();
         } else {
-            header("location:administracionCuentas.php?msj=usuario_desactivado");
+            $mensaje = (strtoupper($nuevoEstatus) == 'ACTIVO') ? 'alta_ok' : 'baja_ok';
+            header("location:administracion_de_usuarios.php?msg=$mensaje");
             exit();
         }
     } else {

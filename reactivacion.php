@@ -56,32 +56,16 @@
                 </div>
             <?php endif; ?>
 
-            <form method="post" action="iniciarSesion.php">
-                <div class="input-group">
-                    <label>Correo electronico</label>
-                    <div class="input-wrapper">
-                        <i class="fa-regular fa-envelope"></i>
-                        <input type="text" name="nombre" placeholder="Ingresa tu Correo electronico" required autocomplete="off">
+            <form method="post" action="procesar_reactivacion.php">
+               <div class="input-group">
+                    <label>Notamos que tu cuenta está desactivada. Si decides reactivarla hoy, conservaras todas tus inscripciones y estadisticas previas.</label>
                     </div>
-                </div>
-
-                <div class="input-group">
-                    <label>Contraseña</label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-lock"></i>
-                        <input type="password" name="contraseña" id="contraseña" placeholder="••••••••" required>
-                        <i class="fa-regular fa-eye toggle-password" onclick="togglePassword()"></i>
-                    </div>
-                </div>
-
-                <button type="submit" name="submit" class="btn-login">
-                    Acceder al Sistema
+                    <button type="submit" name="submit" class="btn-login">
+                    Reactivar mi cuenta
                 </button>
-
-                <div class="login-footer">
-                    <a href="registro.php">¿No tienes una cuenta? Regístrate aquí</a>
-                    <p class="copy">&copy; <?php echo date("Y"); ?> MTB Nogales Sonora</p>
-                </div>
+                <a href="index.php" class="btn-cancelar" style="display: block; width-line: 100%; width: 397px; text-align: center; text-decoration: none; background-color: #ae1e1e; margin-top: 10px; padding: 12px; border-radius: 10px; color: white; font-weight: 600; font-size: 0.95rem;">
+                 Cancelar
+                </a>
             </form>
         </div>
     </div>

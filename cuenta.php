@@ -33,6 +33,18 @@ if ($datos_usuario) {
 } catch (PDOException $e) {
     die("Error al obtener datos: " . $e->getMessage());
 }
+$id_check = $_SESSION['id_usuario'];
+    
+    $stmt_check = $conn->prepare("SELECT estatus FROM usuarios WHERE numeroUser = ?");
+    $stmt_check->execute([$id_check]);
+    $user_status = $stmt_check->fetch(PDO::FETCH_ASSOC);
+
+    if (!$user_status || strtoupper($user_status['estatus']) === 'Inactivo') {
+        session_unset();
+        session_destroy();
+        header("Location: index.php?error=" . urlencode("Tu sesión ha expirado o tu cuenta ha sido desactivada."));
+        exit();
+    }
 ?>
 <!DOCTYPE HTML>
 <html lang="es">
@@ -218,7 +230,7 @@ if ($datos_usuario) {
         </header>
 
         <div class="perfil-container" style="display: flex; justify-content: center; padding: 10px;">
-    <div class="perfil-card" style="background: white; border-radius: 12px; height: 100%; max-height: 500px; width: 100%; max-width: 950px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid #eee;">
+    <div class="perfil-card" style="background: white; border-radius: 12px; height: 100%; max-height: 518px; width: 100%; max-width: 950px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid #eee;">
         
         <div style="background-color: #2f3430; padding: 1.2em; text-align: center; border-bottom: 4px solid #ff6b00;">
             <i class="fas fa-user-circle" style="font-size: 3.5em; color: #ff6b00; margin-bottom: 5px;"></i>
@@ -278,7 +290,7 @@ if ($datos_usuario) {
 
     <button onclick="confirmarEliminar('<?php echo $id_logueado; ?>', '<?php echo $rol; ?>')" 
          class="btn btn-primary btn-sm" style="background: #fff; color: #dc3545; border: 1.5px solid #dc3545; padding: 6px 18px; border-radius: 6px; font-size: 0.85em; font-weight: bold; display: flex; align-items: center; gap: 6px; cursor: pointer;">
-        <i class="fas fa-trash-alt"></i> Borrar Cuenta
+        <i class="fas fa-trash-alt"></i> Desactivar Cuenta
     </button>
 </div>
         </div>
@@ -359,7 +371,7 @@ function confirmarEliminar(id, rol) {
 
     Swal.fire({
         title: '¿Estás seguro?',
-        text: "Tu cuenta será Desactivada. Podras reactivarla en un lapzo de 30 dias.",
+        text: "Tu cuenta será Desactivada. Podras reactivarla en un lapzo de 30 dias, de no ser asi, se dara de baja del sistema.",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ff6b00',
@@ -416,6 +428,21 @@ document.addEventListener('DOMContentLoaded', function() {
         window.history.replaceState({}, document.title, window.location.pathname);
     }
 });
+</script>
+<script>
+function checarEstatusVivo() {
+    fetch('verificar_estatus.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.activo === false) {
+                window.location.href = 'index.php?error=Tu cuenta ha sido desactivada.';
+            }
+        })
+        .catch(error => console.error('Error verificando sesión:', error));
+}
+
+// Ejecutar cada 5 segundos (5000 milisegundos)
+setInterval(checarEstatusVivo, 5000);
 </script>
 </body>
 </html>

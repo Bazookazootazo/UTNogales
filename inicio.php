@@ -6,6 +6,7 @@ if (!isset($_SESSION['id_usuario'])) {
     header("Location: registro.php");
     exit();
 }
+
 $id_logueado = $_SESSION['id_usuario'];
 try {
     $query_user = "SELECT nombreUser, apellidosUser, rol FROM usuarios WHERE numeroUser = ?";
@@ -26,7 +27,20 @@ try {
 } catch (PDOException $e) {
     die("Error al obtener datos: " . $e->getMessage());
 }
+$id_check = $_SESSION['id_usuario'];
+    
+    $stmt_check = $conn->prepare("SELECT estatus FROM usuarios WHERE numeroUser = ?");
+    $stmt_check->execute([$id_check]);
+    $user_status = $stmt_check->fetch(PDO::FETCH_ASSOC);
+
+    if (!$user_status || strtoupper($user_status['estatus']) === 'Inactivo') {
+        session_unset();
+        session_destroy();
+        header("Location: index.php?error=" . urlencode("Tu sesión ha expirado o tu cuenta ha sido desactivada."));
+        exit();
+    }
 ?>
+
 <!DOCTYPE HTML>
 <html lang="es">
 <head>
@@ -933,6 +947,17 @@ document.addEventListener('DOMContentLoaded', function() {
             limpiarURL();
         });
     }
+    if (msg === 'bienvenido_de_nuevo_ok')
+    {
+        Swal.fire({
+            title: '¡Bienvenido de nuevo a MTB nogales!',
+            text: 'Has reactivado tu cuenta nuevamente. ¡Esperamos y disfrutes tu estadia!',
+            icon: 'success',
+            confirmButtonColor: '#E8630A'
+        }).then(() => {
+            limpiarURL();
+        });
+    }
 
  function limpiarURL() {
         const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
@@ -957,6 +982,21 @@ function confirmarCierreSesion(event) {
         }
     });
 }
+</script>
+<script>
+function checarEstatusVivo() {
+    fetch('verificar_estatus.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.activo === false) {
+                window.location.href = 'index.php?error=Tu cuenta ha sido desactivada.';
+            }
+        })
+        .catch(error => console.error('Error verificando sesión:', error));
+}
+
+// Ejecutar cada 5 segundos (5000 milisegundos)
+setInterval(checarEstatusVivo, 5000);
 </script>
 </body>
 </html>

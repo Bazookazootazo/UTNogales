@@ -3,6 +3,7 @@
   --primary-dark: #863e0a;
   --bg-dark: #3b2c1e;
   --font-principal: 'Source Sans 3', sans-serif;
+  --secundary: #f61e1e;
 }
 
 body, html {
@@ -122,6 +123,23 @@ body, html {
 }
 
 .btn-login:hover {
+    background: var(--primary-dark);
+}
+
+.btn-cancelar {
+    width: 100%;
+    padding: 14px;
+    background: var(--secundary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-cancelar:hover {
     background: var(--primary-dark);
 }
 

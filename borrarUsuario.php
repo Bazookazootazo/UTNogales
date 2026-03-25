@@ -1,31 +1,38 @@
 <?php 
-require_once("conexion.php");
+require_once("conexion.php"); 
 session_start();
 
 if (isset($_GET['numeroUser'])) {
-    $idABorrar = mysqli_real_escape_string($con, $_GET['numeroUser']);
-    $idSesionActual = $_SESSION['numeroUser'];
-    $rolSesion = $_SESSION['rol']; 
+    $idABorrar = $_GET['numeroUser'];
+    
+    $idSesionActual = $_SESSION['id_usuario'] ?? null; 
+    $rolSesion = $_SESSION['rol'] ?? ''; 
 
     if ($idABorrar == $idSesionActual && $rolSesion == 'ADMIN') {
-        header("location:cuenta.php?msj=error_admin_autoborrado");
+        header("Location: cuenta.php?msj=error_admin_autoborrado");
         exit();
     }
 
-    $query = "DELETE FROM usuarios WHERE numeroUser = '$idABorrar'";
-    $result = mysqli_query($con, $query);
+    try {
+        $query = "DELETE FROM usuarios WHERE numeroUser = ?";
+        $stmt = $conn->prepare($query);
+        $result = $stmt->execute([$idABorrar]);
 
-    if ($result) {
-        if ($idABorrar == $idSesionActual) {
-            session_destroy();
-            header("location:login.php?msj=cuenta_eliminada");
-        } else {
-            header("location:administracionCuentas.php?msj=usuario_eliminado");
+        if ($result) {
+            if ($idABorrar == $idSesionActual) {
+                session_destroy();
+                header("Location: login.php?msj=cuenta_eliminada");
+            } else {
+               header("Location: administracion_de_usuarios.php?msg=borrado_ok");
+            exit();
+            }
+            exit();
         }
-    } else {
-        echo "Error al intentar borrar el registro: " . mysqli_error($con);
+    } catch (PDOException $e) {
+        die("Error al intentar borrar: " . $e->getMessage());
     }
 } else {
-    header("location:cuenta.php");
+    header("Location: administracion_de_usuarios.php");
+    exit();
 }
 ?>
