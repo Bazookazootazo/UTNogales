@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'conexion.php';
+require '../config/conexion.php';
 
 if (isset($_POST['submit'])) {
     $correo = $_POST['nombre'] ?? '';
@@ -21,6 +21,7 @@ if (isset($_POST['submit'])) {
         $res = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor(); 
 
+<<<<<<< HEAD:iniciarSesion.php
         if ($res) {
             // --- CAMBIO CLAVE AQUÍ ---
             // Usamos 'estado' en lugar de 'estatus' y comparamos con 'INACTIVO' en mayúsculas
@@ -43,12 +44,21 @@ if (isset($_POST['submit'])) {
 
             // CASO C: El SP detecta error (Contraseña mal, usuario no existe, etc.)
             header("Location: index.php?error=" . urlencode($res['mensaje'] ?? 'Error de acceso'));
+=======
+        if ($res && $res['estado'] === 'EXITO') {
+            $_SESSION['id_usuario'] = $res['id'];
+            $_SESSION['rol'] = $res['rol'];
+            header("Location: ../inicio.php?msg=ok");
+            exit();
+        } else {
+            header("Location: ../index.php?error=" . urlencode($res['mensaje'] ?? 'Error desconocido'));
+>>>>>>> 6570f7fed8af42ae14b5d289d778075e852666da:actions/iniciarSesion.php
             exit();
         }
-
+        
     } catch (PDOException $e) {
-        header("Location: index.php?error=Error de sistema.");
+        header("Location: ../index.php?error=Error de sistema.");
         exit();
     }
-} 
+}
 ?>

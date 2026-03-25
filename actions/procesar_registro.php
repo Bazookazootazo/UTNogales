@@ -1,7 +1,7 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-require 'conexion.php'; 
+require '../config/conexion.php'; 
 
 try {
     $pass_original = $_POST['password']; 

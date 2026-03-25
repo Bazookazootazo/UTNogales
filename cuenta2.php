@@ -1,63 +1,8 @@
 <?php 
-$pagina_actual = 'cuenta'; 
-<<<<<<< HEAD
-session_start();
-include 'conexion.php'; 
-
-if (!isset($_SESSION['id_usuario'])) {
-    header("Location: registro.php");
-    exit();
-}
-
-$id_logueado = $_SESSION['id_usuario'];
-
-try {
-   $query_user = "SELECT nombreUser, apellidosUser, correoUser, telefonoUser, rol, ultimoAcceso, estatus FROM usuarios WHERE numeroUser = ?";
-$stmt = $conn->prepare($query_user);
-$stmt->execute([$id_logueado]);
-$datos_usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if ($datos_usuario) {
-    $nombre_completo = $datos_usuario['nombreUser'] . " " . $datos_usuario['apellidosUser'];
-    $correo = $datos_usuario['correoUser'];
-    $telefono = $datos_usuario['telefonoUser'];
-    $rol = $datos_usuario['rol'];
-    $estatus = $datos_usuario['estatus'];
-        $n = mb_substr($datos_usuario['nombreUser'], 0, 1);
-        $a = mb_substr($datos_usuario['apellidosUser'], 0, 1);
-        $iniciales = strtoupper($n . $a);
-    } else {
-        session_destroy();
-        header("Location: registro.php");
-        exit();
-    }
-} catch (PDOException $e) {
-    die("Error al obtener datos: " . $e->getMessage());
-}
-$id_check = $_SESSION['id_usuario'];
-    
-    $stmt_check = $conn->prepare("SELECT estatus FROM usuarios WHERE numeroUser = ?");
-    $stmt_check->execute([$id_check]);
-    $user_status = $stmt_check->fetch(PDO::FETCH_ASSOC);
-
-    if (!$user_status || strtoupper($user_status['estatus']) === 'Inactivo') {
-        session_unset();
-        session_destroy();
-        header("Location: index.php?error=" . urlencode("Tu sesión ha expirado o tu cuenta ha sido desactivada."));
-        exit();
-    }
-=======
-require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol, etc.
->>>>>>> 6570f7fed8af42ae14b5d289d778075e852666da
+$pagina_actual = 'cuenta';
+require_once 'config/auth.php'; 
 ?>
-<!DOCTYPE HTML>
-<html lang="es">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <title>MTB Sistema — Mi Cuenta</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <link rel="stylesheet" href="assets/css/mtb-dashboard.css" />
+
     <style>
         /* Estilo base del footer user */
 .sidebar-user {
@@ -67,16 +12,17 @@ require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol,
     border-radius: var(--radius-md);
     transition: all 0.3s ease;
     cursor: pointer;
-    color: white; 
+    color: white; /* O el color de tu texto */
 }
 
+/* Estado activo (Naranja) */
 .sidebar-user.active {
-    background-color: rgba(255, 107, 0, 0.15); 
-    border-left: 3px solid #ff6b00;
+    background-color: rgba(255, 107, 0, 0.15); /* Fondo naranja suave */
+    border-left: 3px solid #ff6b00; /* Línea naranja intensa */
 }
 
 .sidebar-user.active .user-name {
-    color: #ff6b00;
+    color: #ff6b00; /* Texto del nombre en naranja */
     font-weight: bold;
 }
 
@@ -87,15 +33,17 @@ require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol,
 }
 
 .logout-icon:hover {
-    color: #ff4444; 
+    color: #ff4444; /* Rojo al pasar el mouse por cerrar sesión */
 }
 
+        /* FIX: Forzamos el layout de la app para que no centre la barra */
         .mtb-app {
             display: flex;
             width: 100%;
             min-height: 100vh;
         }
 
+        /* Contenedor principal de la derecha */
         .mtb-content {
             flex: 1;
             display: flex;
@@ -104,6 +52,7 @@ require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol,
             background-color: #f4f7f6;
         }
 
+        /* Área de la tarjeta con centrado independiente */
         .perfil-container {
             flex: 1;
             display: flex;
@@ -112,14 +61,8 @@ require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol,
             padding: 40px;
         }
     </style>
-</head>
-<body>
 
-<div class="mtb-app">
-
-    <?php include_once 'includes/header_sidebar.php'; ?>
-
-    <main class="mtb-content">
+      <main class="mtb-content">
         
         <header class="mtb-topbar" style="background: #fff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0;">
             <div style="display: flex; align-items: center; gap: 20px;">
@@ -131,7 +74,7 @@ require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol,
         </header>
 
         <div class="perfil-container" style="display: flex; justify-content: center; padding: 10px;">
-    <div class="perfil-card" style="background: white; border-radius: 12px; height: 100%; max-height: 518px; width: 100%; max-width: 950px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid #eee;">
+    <div class="perfil-card" style="background: white; border-radius: 12px; height: 100%; max-height: 500px; width: 100%; max-width: 950px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid #eee;">
         
         <div style="background-color: #2f3430; padding: 1.2em; text-align: center; border-bottom: 4px solid #ff6b00;">
             <i class="fas fa-user-circle" style="font-size: 3.5em; color: #ff6b00; margin-bottom: 5px;"></i>
@@ -191,13 +134,13 @@ require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol,
 
     <button onclick="confirmarEliminar('<?php echo $id_logueado; ?>', '<?php echo $rol; ?>')" 
          class="btn btn-primary btn-sm" style="background: #fff; color: #dc3545; border: 1.5px solid #dc3545; padding: 6px 18px; border-radius: 6px; font-size: 0.85em; font-weight: bold; display: flex; align-items: center; gap: 6px; cursor: pointer;">
-        <i class="fas fa-trash-alt"></i> Desactivar Cuenta
+        <i class="fas fa-trash-alt"></i> Borrar Cuenta
     </button>
 </div>
         </div>
     </div>
 </div>
-    </main>
+</main>
 
 <!-- ══════════════════════════════════════════════════════════
      modal:editar usuarios
@@ -211,45 +154,38 @@ require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol,
             </button>
         </div>
         <div class="modal-body">
-            <form id="formEditarPerfil" method="POST" action="actualizar_perfil.php">
+            <form id="formEvento">
                 <div class="form-group">
                     <label class="form-label required">Nombres</label>
-                    <input type="text" name="nuevo_nombre" class="form-control" value="<?php echo $datos_usuario['nombreUser']; ?>" required>
+                    <input type="text" class="form-control" placeholder="Ej. Enrique Manuel" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label required">Apellidos</label>
-                        <input type="text" name="nuevo_apellido" class="form-control" value="<?php echo $datos_usuario['apellidosUser']; ?>" required>
+                        <input type="text" class="form-control" placeholder="Ej. Rodriguez Garcia" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Correo electrónico</label>
-                        <input type="email" name="nuevo_correo" class="form-control" value="<?php echo $correo; ?>" required>
+                        <label class="form-label">Correo electronico</label>
+                        <input type="email" class="form-control" placeholder="Ej. enrique.rodriguez@example.com">
                     </div>
                 </div>
                 <div class="form-group">
-    <label class="form-label">Número de teléfono</label>
-    <input type="text" 
-           name="nuevo_telefono" 
-           class="form-control" 
-           value="<?php echo $telefono; ?>" 
-           placeholder="Ej. 631 7262 232"
-           pattern="[0-9]{8,15}" 
-           title="El teléfono debe tener entre 8 y 15 números"
-           oninput="this.value = this.value.replace(/[^0-9]/g, '');"> 
-           </div>
+                 <div class="form-group">
+                        <label class="form-label">Numero de telefono</label>
+                        <input type="text" class="form-control" placeholder="Ej. 631 7262 232">
+                    </div>
             </form>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalEditarUsuarios')">Cancelar</button>
-            <button type="submit" form="formEditarPerfil" class="btn btn-primary" style="background: #ff6b00; border: none;">
-                <i class="fas fa-save"></i> Guardar Cambios
-            </button>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalEditarUsuarios')">Cancelar</button>
+    <button type="submit" form="formEditarPerfil" class="btn btn-primary" style="background: #ff6b00; border: none;">
+        <i class="fas fa-save"></i> Guardar Cambios
+    </button>
         </div>
     </div>
 </div>
 
-<?php include 'includes/footer_scripts.php'; ?>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     const toggleBtn = document.getElementById('toggleSidebar');
     if(toggleBtn) {
@@ -273,7 +209,7 @@ function confirmarEliminar(id, rol) {
 
     Swal.fire({
         title: '¿Estás seguro?',
-        text: "Tu cuenta será Desactivada. Podras reactivarla en un lapzo de 30 dias, de no ser asi, se dara de baja del sistema.",
+        text: "Tu cuenta será Desactivada. Podras reactivarla en un lapzo de 30 dias.",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ff6b00',
@@ -301,50 +237,6 @@ function cerrarModal(id) {
 
 function abrirModalEditar() { abrirModal('modalEditarUsuarios'); }
 
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const msj = urlParams.get('msj');
-    const errorText = urlParams.get('error_text');
-
-    if (msj === 'edit_ok') {
-        Swal.fire({
-            icon: 'success',
-            title: '¡Actualizado!',
-            text: 'Tus datos se guardaron correctamente.',
-            confirmButtonColor: '#ff6b00'
-        });
-    }
-
-    if (msj === 'edit_error') {
-        Swal.fire({
-            icon: 'error',
-            title: 'No se pudo actualizar',
-            text: errorText ? decodeURIComponent(errorText) : 'Ocurrió un error inesperado.',
-            confirmButtonColor: '#ff6b00'
-        });
-    }
-
-    if (msj) {
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
-});
-</script>
-<script>
-function checarEstatusVivo() {
-    fetch('verificar_estatus.php')
-        .then(response => response.json())
-        .then(data => {
-            if (data.activo === false) {
-                window.location.href = 'index.php?error=Tu cuenta ha sido desactivada.';
-            }
-        })
-        .catch(error => console.error('Error verificando sesión:', error));
-}
-
-// Ejecutar cada 5 segundos (5000 milisegundos)
-setInterval(checarEstatusVivo, 5000);
 </script>
 </body>
 </html>
