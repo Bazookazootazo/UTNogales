@@ -201,7 +201,7 @@ if ($datos_usuario) {
             <span class="nav-section-label">Administración</span>
 
             <div class="nav-item">
-                <a href="#" class="nav-link" data-page="usuarios">
+                <a href="administracion_de_usuarios.php" class="nav-link" data-page="usuarios">
                     <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
                     <span class="nav-label">Usuarios</span>
                 </a>
