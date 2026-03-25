@@ -40,32 +40,37 @@
                 </a>
             </div>
             <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] == 'ADMIN'): ?>
-            <div class="nav-divider"></div>
-            <span class="nav-section-label">Administración</span>
-            <div class="nav-item">
-                <a href="administracion_de_usuarios.php" class="nav-link" data-page="usuarios">
-                    <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
-                    <span class="nav-label">Usuarios</span>
-                </a>
-            </div>
-            <?php endif; ?>
+<div class="nav-divider"></div>
+<span class="nav-section-label">Administración</span>
+<div class="nav-item">
+    <a href="administracion_de_usuarios.php" class="nav-link <?php echo ($pagina_actual == 'AdministracionUsuarios') ? 'active' : ''; ?>">
+        <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+        <span class="nav-label">Usuarios</span>
+    </a>
+</div>
+<?php endif; ?>
         </nav>
 
         <div class="sidebar-footer">
-
-            <div class="sidebar-user">
-    <div class="user-avatar"><?php echo isset($iniciales) ? $iniciales : 'U'; ?></div>
-
-    <a href="cuenta.php" class="user-info">
-        <div class="user-name"><?php echo isset($nombre_completo) ? htmlspecialchars($nombre_completo) : 'Usuario'; ?></div>
-        <div class="user-role"><?php echo isset($rol) ? htmlspecialchars($rol) : 'Rol'; ?></div>
-    </a>
-
-    <a href="#" onclick="confirmarCierreSesion(event)" title="Cerrar sesión" style="color:rgba(255,255,255,.4); cursor:pointer;">
-        <i class="fas fa-right-from-bracket"></i>
-    </a>
-</div>
+    <div class="sidebar-user <?php echo ($pagina_actual == 'cuenta') ? 'active' : ''; ?>">
+        <div class="user-avatar">
+            <?php echo isset($iniciales) ? $iniciales : 'U'; ?>
         </div>
+
+        <a href="cuenta.php" class="user-info">
+            <div class="user-name">
+                <?php echo isset($nombre_completo) ? htmlspecialchars($nombre_completo) : 'Usuario'; ?>
+            </div>
+            <div class="user-role">
+                <?php echo isset($rol) ? htmlspecialchars($rol) : 'Rol'; ?>
+            </div>
+        </a>
+
+        <a href="#" onclick="confirmarCierreSesion(event)" title="Cerrar sesión" style="color:rgba(255,255,255,.4); cursor:pointer;">
+            <i class="fas fa-right-from-bracket"></i>
+        </a>
+    </div>
+</div>
 
     </aside>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

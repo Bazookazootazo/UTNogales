@@ -242,23 +242,6 @@ $id_check = $_SESSION['id_usuario'];
         });
     }
 
-// Función para Baja del Sistema (Inactivar)
-function confirmarBaja(id, nombre) {
-    Swal.fire({
-        title: '¿Dar de baja del sistema?',
-        text: `El usuario ${nombre} no podrá iniciar sesión hasta que sea reactivado.`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#666',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sí, desactivar',
-        cancelButtonText: 'Cancelar'    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = `dar_de_baja_cuenta.php?numeroUser=${id}&nuevo_estatus=Inactivo`;
-        }
-    });
-}
-
 function abrirModal(id) {
     document.getElementById(id).classList.add('active');
 }
@@ -278,6 +261,26 @@ function abrirModalEditarAdmin(usuario) {
     
     abrirModal('modalEditarUsuarios'); 
 }
+// FUNCIÓN PARA DAR DE BAJA (Corregida la ruta a actions/)
+function confirmarBaja(id, nombre) {
+    Swal.fire({
+        title: '¿Dar de baja del sistema?',
+        text: `El usuario ${nombre} no podrá iniciar sesión hasta que sea reactivado.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#666',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, desactivar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Agregamos "actions/" para que lo encuentre
+            window.location.href = `actions/dar_de_baja_cuenta.php?numeroUser=${id}&nuevo_estatus=Inactivo`;
+        }
+    });
+}
+
+// FUNCIÓN PARA REACTIVAR (Corregida para que coincida con la de arriba)
 function confirmarAlta(id, nombre) {
     Swal.fire({
         title: '¿Reactivar cuenta?',
@@ -290,7 +293,8 @@ function confirmarAlta(id, nombre) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = `dar_de_baja_cuenta.php?numeroUser=${id}&nuevo_estatus=Activo`;
+            // Aseguramos que la ruta sea la misma
+            window.location.href = `actions/dar_de_baja_cuenta.php?numeroUser=${id}&nuevo_estatus=Activo`;
         }
     });
 }

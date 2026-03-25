@@ -47,6 +47,17 @@ $id_check = $_SESSION['id_usuario'];
     }
 ?>
     <?php include_once 'includes/header_sidebar.php'; ?>
+    <style>
+        /* Color naranja para el item activo en el footer */
+.sidebar-user.active {
+    background-color: rgba(255, 107, 0, 0.1); /* Un fondo naranja suave */
+    border-left: 4px solid #ff6b00; /* La barrita naranja brillante */
+}
+
+.sidebar-user.active .user-name {
+    color: #ff6b00; /* Texto del nombre en naranja */
+}
+        </style>
     <main class="mtb-content">
         
         <header class="mtb-topbar" style="background: #fff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0;">
