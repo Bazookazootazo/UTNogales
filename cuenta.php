@@ -51,17 +51,16 @@ if ($datos_usuario) {
     border-radius: var(--radius-md);
     transition: all 0.3s ease;
     cursor: pointer;
-    color: white; /* O el color de tu texto */
+    color: white; 
 }
 
-/* Estado activo (Naranja) */
 .sidebar-user.active {
-    background-color: rgba(255, 107, 0, 0.15); /* Fondo naranja suave */
-    border-left: 3px solid #ff6b00; /* Línea naranja intensa */
+    background-color: rgba(255, 107, 0, 0.15); 
+    border-left: 3px solid #ff6b00;
 }
 
 .sidebar-user.active .user-name {
-    color: #ff6b00; /* Texto del nombre en naranja */
+    color: #ff6b00;
     font-weight: bold;
 }
 
@@ -72,17 +71,15 @@ if ($datos_usuario) {
 }
 
 .logout-icon:hover {
-    color: #ff4444; /* Rojo al pasar el mouse por cerrar sesión */
+    color: #ff4444; 
 }
 
-        /* FIX: Forzamos el layout de la app para que no centre la barra */
         .mtb-app {
             display: flex;
             width: 100%;
             min-height: 100vh;
         }
 
-        /* Contenedor principal de la derecha */
         .mtb-content {
             flex: 1;
             display: flex;
@@ -91,7 +88,6 @@ if ($datos_usuario) {
             background-color: #f4f7f6;
         }
 
-        /* Área de la tarjeta con centrado independiente */
         .perfil-container {
             flex: 1;
             display: flex;
@@ -176,37 +172,17 @@ if ($datos_usuario) {
             </div>
 
             <div class="nav-divider"></div>
-
-            <!-- Resultados -->
-            <span class="nav-section-label">Resultados</span>
-
-            <div class="nav-item">
-                <a href="#" class="nav-link" data-page="resultados">
-                    <span class="nav-icon"><i class="fas fa-trophy"></i></span>
-                    <span class="nav-label">Resultados</span>
-                </a>
-            </div>
-
-            <div class="nav-item">
-                <a href="#" class="nav-link" data-page="ranking">
-                    <span class="nav-icon"><i class="fas fa-ranking-star"></i></span>
-                    <span class="nav-label">Ranking General</span>
-                </a>
-            </div>
-
-            <div class="nav-divider"></div>
-
             <!-- Administración -->
             <?php if ($_SESSION['rol'] == 'ADMIN'): ?>
             <span class="nav-section-label">Administración</span>
-
-            <div class="nav-item">
-                <a href="administracion_de_usuarios.php" class="nav-link" data-page="usuarios">
-                    <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
-                    <span class="nav-label">Usuarios</span>
-                </a>
-            </div>
-        </nav>
+               <div class="nav-item">
+                  <a href="administracion_de_usuarios.php" 
+                  class="nav-link"  
+                  data-page="usuarios">
+               <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+            <span class="nav-label">Usuarios</span>
+        </a>
+    </div>
     <?php endif; ?>
 
         <!-- Footer del Sidebar -->

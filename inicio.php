@@ -118,37 +118,17 @@ try {
             </div>
 
             <div class="nav-divider"></div>
-
-            <!-- Resultados -->
-            <span class="nav-section-label">Resultados</span>
-
-            <div class="nav-item">
-                <a href="#" class="nav-link" data-page="resultados">
-                    <span class="nav-icon"><i class="fas fa-trophy"></i></span>
-                    <span class="nav-label">Resultados</span>
-                </a>
-            </div>
-
-            <div class="nav-item">
-                <a href="#" class="nav-link" data-page="ranking">
-                    <span class="nav-icon"><i class="fas fa-ranking-star"></i></span>
-                    <span class="nav-label">Ranking General</span>
-                </a>
-            </div>
-
-            <div class="nav-divider"></div>
-
             <!-- Administración -->
             <?php if ($_SESSION['rol'] == 'ADMIN'): ?>
             <span class="nav-section-label">Administración</span>
-
-            <div class="nav-item">
-                <a href="administracion_de_usuarios.php" class="nav-link" data-page="usuarios">
-                    <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
-                    <span class="nav-label">Usuarios</span>
-                </a>
-            </div>
-        </nav>
+               <div class="nav-item">
+                  <a href="administracion_de_usuarios.php" 
+                  class="nav-link"  
+                  data-page="usuarios">
+               <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+            <span class="nav-label">Usuarios</span>
+        </a>
+    </div>
     <?php endif; ?>
 
         <!-- Footer del Sidebar -->
