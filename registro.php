@@ -27,7 +27,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-image: linear-gradient(rgba(122, 158, 50, 0.6), rgba(0, 0, 0, 0.6)), url('MTB_BG.jpeg');
+            background-image: linear-gradient(rgba(122, 158, 50, 0.6), rgba(0, 0, 0, 0.6)), url('assets/img/MTB_BG.jpeg');
             background-size: cover;
             background-position: center;
             padding: 40px 20px;
@@ -244,7 +244,7 @@ document.getElementById('formRegistro').addEventListener('submit', function(e) {
     
     const formData = new FormData(this);
 
-    fetch('procesar_registro.php', {
+    fetch('actions/procesar_registro.php', {
         method: 'POST',
         body: formData
     })

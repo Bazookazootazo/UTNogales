@@ -13,7 +13,7 @@ if (ini_get("session.use_cookies")) {
 
 session_destroy();
 
-header("location: index.php?msg=ok3");
+header("location: ../index.php?msg=ok3");
 
 exit; 
 ?>

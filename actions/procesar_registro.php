@@ -1,7 +1,12 @@
 <?php
-session_start(); // Es vital para poder iniciar la sesión aquí mismo
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+session_start();
 header('Content-Type: application/json');
-require 'conexion.php'; 
+require '../config/conexion.php'; 
 
 try {
     $pass_original = $_POST['password']; 
@@ -20,7 +25,11 @@ try {
         $equipo
     ]);
 
+    // Obtenemos el resultado del SELECT que hace el SP
     $res = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // IMPORTANTE: Cerramos el cursor para que no dé error de red en la siguiente petición
+    $stmt->closeCursor();
 
     if ($res && $res['estado'] === 'EXITO') {
         $_SESSION['id_usuario'] = $res['id_generado']; 
@@ -30,6 +39,6 @@ try {
     echo json_encode($res);
 
 } catch (PDOException $e) {
-    echo json_encode(['estado' => 'ERROR', 'mensaje' => 'Error de conexión: ' . $e->getMessage()]);
+    echo json_encode(['estado' => 'ERROR', 'mensaje' => 'Error de SQL: ' . $e->getMessage()]);
 }
 ?>

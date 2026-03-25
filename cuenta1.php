@@ -1,7 +1,8 @@
 <?php 
-$pagina_actual = 'cuenta'; 
-require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol, etc.
+$pagina_actual = 'cuanta';
+require_once 'config/auth.php';
 ?>
+
 <!DOCTYPE HTML>
 <html lang="es">
 <head>
@@ -47,7 +48,127 @@ require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol,
 
 <div class="mtb-app">
 
-    <?php include_once 'includes/header_sidebar.php'; ?>
+    <!-- ── OVERLAY para móvil (cierra el sidebar) ── -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ════════════════════════════════════════════════
+         SIDEBAR
+    ════════════════════════════════════════════════ -->
+    <aside class="mtb-sidebar" id="mtbSidebar">
+
+        <!-- Marca / Logo -->
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon">
+                <i class="fas fa-person-biking"></i>
+            </div>
+            <div class="sidebar-brand-text">
+                <span class="brand-name">MTB</span>
+                <span class="brand-sub">Mountain Bike System</span>
+            </div>
+        </div>
+
+        <!-- Navegación -->
+        <nav class="sidebar-nav">
+
+            <!-- Principal -->
+            <span class="nav-section-label">Principal</span>
+
+            <div class="nav-item">
+               <a href="inicio.php" class="nav-link <?php echo ($pagina_actual == 'inicio') ? 'active' : ''; ?>">
+    <span class="nav-icon"><i class="fas fa-th-large"></i></span>
+    <span class="nav-label">Dashboard</span>
+</a>
+            </div>
+
+            <div class="nav-divider"></div>
+
+            <!-- Gestión -->
+            <span class="nav-section-label">Gestión</span>
+
+            <div class="nav-item">
+                <a href="#" class="nav-link" data-page="eventos">
+                    <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
+                    <span class="nav-label">Eventos y Fechas</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="archivo2.php" class="nav-link <?php echo ($pagina_actual == 'inscripciones') ? 'active' : ''; ?>">
+                    <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
+                    <span class="nav-label">Inscripciones</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="pistas.php" class="nav-link" data-page="pistas">
+                    <span class="nav-icon"><i class="fas fa-map-location-dot"></i></span>
+                    <span class="nav-label">Pistas</span>
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="#" class="nav-link" data-page="deportistas">
+                    <span class="nav-icon"><i class="fas fa-users"></i></span>
+                    <span class="nav-label">Deportistas</span>
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="#" class="nav-link" data-page="categorias">
+                    <span class="nav-icon"><i class="fas fa-layer-group"></i></span>
+                    <span class="nav-label">Categorías</span>
+                </a>
+            </div>
+
+            <div class="nav-divider"></div>
+
+            <!-- Resultados -->
+            <span class="nav-section-label">Resultados</span>
+
+            <div class="nav-item">
+                <a href="#" class="nav-link" data-page="resultados">
+                    <span class="nav-icon"><i class="fas fa-trophy"></i></span>
+                    <span class="nav-label">Resultados</span>
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="#" class="nav-link" data-page="ranking">
+                    <span class="nav-icon"><i class="fas fa-ranking-star"></i></span>
+                    <span class="nav-label">Ranking General</span>
+                </a>
+            </div>
+
+            <div class="nav-divider"></div>
+
+            <!-- Administración -->
+            <?php if ($_SESSION['rol'] == 'ADMIN'): ?>
+            <span class="nav-section-label">Administración</span>
+
+            <div class="nav-item">
+                <a href="#" class="nav-link" data-page="usuarios">
+                    <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+                    <span class="nav-label">Usuarios</span>
+                </a>
+            </div>
+        </nav>
+    <?php endif; ?>
+
+        <!-- Footer del Sidebar -->
+        <div class="sidebar-footer">
+    <div class="sidebar-user">
+        <div class="user-avatar"><?php echo $iniciales; ?></div>
+        
+        <a href="cuenta.php" class="user-info">
+            <div class="user-name"><?php echo $nombre_completo; ?></div>
+            <div class="user-role"><?php echo $rol; ?></div>
+        </a>
+        
+        <a href="cerrarSesion.php" title="Cerrar sesión" style="color:rgba(255,255,255,.4); transition: color .2s;">
+            <i class="fas fa-right-from-bracket"></i>
+        </a>
+    </div>
+</div>
+
+    </aside>
 
     <main class="mtb-content">
         
@@ -130,8 +251,6 @@ require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol,
     </div>
 </div>
     </main>
-
-<?php include 'includes/footer_scripts.php'; ?>
 <script>
     // JS para el sidebar
     const toggleBtn = document.getElementById('toggleSidebar');

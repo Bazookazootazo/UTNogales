@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'conexion.php';
+require '../config/conexion.php';
 
 if (isset($_POST['submit'])) {
     $correo = $_POST['nombre'] ?? '';
@@ -15,18 +15,21 @@ if (isset($_POST['submit'])) {
         $stmt = $conn->prepare("CALL sp_login(?, ?)");
         $stmt->execute([$correo, $es_valida ? 1 : 0]);
         $res = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor(); 
 
-        if ($res['estado'] === 'EXITO') {
+        if ($res && $res['estado'] === 'EXITO') {
             $_SESSION['id_usuario'] = $res['id'];
             $_SESSION['rol'] = $res['rol'];
-            header("Location: inicio.php?msg=ok");
-        exit();
+            header("Location: ../inicio.php?msg=ok");
+            exit();
         } else {
-            header("Location: index.php?error=" . urlencode($res['mensaje']));
+            header("Location: ../index.php?error=" . urlencode($res['mensaje'] ?? 'Error desconocido'));
+            exit();
         }
-        exit();
-
+        
     } catch (PDOException $e) {
-        header("Location: index.php?error=Error de sistema.");
+        header("Location: ../index.php?error=Error de sistema.");
+        exit();
     }
 }
+?>

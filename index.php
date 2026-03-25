@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UTN - Acceso al Sistema</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="index.css">
-    <link rel="icon" href="css/logo_utn.ico">
+    <link rel="stylesheet" href="assets/css/index.css">
 </head>
 <body>
     <div class="login-wrapper">
@@ -23,7 +22,7 @@
                 </div>
             <?php endif; ?>
 
-            <form method="post" action="iniciarSesion.php">
+            <form method="post" action="actions/iniciarSesion.php">
                 <div class="input-group">
                     <label>Correo electronico</label>
                     <div class="input-wrapper">
