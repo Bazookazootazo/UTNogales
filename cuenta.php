@@ -11,20 +11,43 @@ require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol,
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="assets/css/mtb-dashboard.css" />
     <style>
-        .sidebar-user { display: flex; align-items: center; padding: 12px; border-radius: 8px; transition: all 0.3s ease; cursor: pointer; color: white; text-decoration: none; }
-        .sidebar-user.active { background-color: rgba(255, 107, 0, 0.15); border-left: 3px solid #ff6b00; }
-        .sidebar-user.active .user-name { color: #ff6b00; font-weight: bold; }
-        .logout-icon { color: rgba(255,255,255,.4); transition: color .2s; margin-left: auto; }
-        .logout-icon:hover { color: #ff4444; }
+        /* Estilo base del footer user */
+.sidebar-user {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    color: white; 
+}
 
-        /* FIX: Forzamos el layout de la app para que no centre la barra */
+.sidebar-user.active {
+    background-color: rgba(255, 107, 0, 0.15); 
+    border-left: 3px solid #ff6b00;
+}
+
+.sidebar-user.active .user-name {
+    color: #ff6b00;
+    font-weight: bold;
+}
+
+.logout-icon {
+    color: rgba(255,255,255,.4);
+    transition: color .2s;
+    margin-left: auto;
+}
+
+.logout-icon:hover {
+    color: #ff4444; 
+}
+
         .mtb-app {
             display: flex;
             width: 100%;
             min-height: 100vh;
         }
 
-        /* Contenedor principal de la derecha */
         .mtb-content {
             flex: 1;
             display: flex;
@@ -33,7 +56,6 @@ require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol,
             background-color: #f4f7f6;
         }
 
-        /* Área de la tarjeta con centrado independiente */
         .perfil-container {
             flex: 1;
             display: flex;
@@ -61,79 +83,126 @@ require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol,
         </header>
 
         <div class="perfil-container" style="display: flex; justify-content: center; padding: 10px;">
-    <div class="perfil-card" style="background: white; border-radius: 12px; width: 100%; max-width: 1000px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid #eee;">
+    <div class="perfil-card" style="background: white; border-radius: 12px; height: 100%; max-height: 500px; width: 100%; max-width: 950px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid #eee;">
         
-        <div style="background-color: #2f3430; padding: 1.5em; text-align: center; border-bottom: 4px solid #ff6b00;">
-            <i class="fas fa-user-circle" style="font-size: 4em; color: #ff6b00; margin-bottom: 5px;"></i>
-            <h3 style="color: white; margin: 0; font-size: 1.6em;"><?php echo $nombre_completo; ?></h3>
-            <span style="background: #ff6b00; padding: 3px 15px; border-radius: 20px; font-size: 0.75em; font-weight: bold; color: white; text-transform: uppercase; margin-top: 8px; display: inline-block;">
+        <div style="background-color: #2f3430; padding: 1.2em; text-align: center; border-bottom: 4px solid #ff6b00;">
+            <i class="fas fa-user-circle" style="font-size: 3.5em; color: #ff6b00; margin-bottom: 5px;"></i>
+            <h3 style="color: white; margin: 0; font-size: 1.5em;"><?php echo $nombre_completo; ?></h3>
+            <span style="background: #ff6b00; padding: 2px 12px; border-radius: 20px; font-size: 0.7em; font-weight: bold; color: white; text-transform: uppercase; margin-top: 5px; display: inline-block;">
                 <?php echo $rol; ?>
             </span>
         </div>   
 
-        <div style="padding: 1.5em 2.5em; background: white;">
+        <div style="padding: 1.5em 3em; background: white;">
             
-            <div style="display: flex; justify-content: space-between; gap: 20px; margin-bottom: 1.5em; border-bottom: 1px solid #f5f5f5; padding-bottom: 15px;">
+            <div style="display: flex; width: 100%; gap: 10px; border-bottom: 1px solid #f5f5f5; padding-bottom: 15px; margin-bottom: 15px;">
                 
-                <div style="flex: 0 0 25%;">
-                    <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; letter-spacing: 0.5px; display: block;">
+                <div style="width: 30%;">
+                    <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; display: block;">
                         <i class="fas fa-user" style="color: #ff6b00; margin-right: 5px;"></i> Nombre
                     </label>
-                    <p style="margin: 5px 0 0; font-size: 1.05em; color: #333; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        <?php echo $nombre_completo; ?>
-                    </p>
+                    <p style="margin: 5px 0 0; font-size: 1em; color: #333; font-weight: 500;"><?php echo $nombre_completo; ?></p>
                 </div>
 
-                <div style="flex: 0 0 45%;">
-                    <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; letter-spacing: 0.5px; display: block;">
+                <div style="width: 45%;">
+                    <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; display: block;">
                         <i class="fas fa-envelope" style="color: #ff6b00; margin-right: 5px;"></i> Correo Electrónico
                     </label>
-                    <p style="margin: 5px 0 0; font-size: 1.05em; color: #333; font-weight: 500; white-space: nowrap;">
-                        <?php echo $correo; ?>
-                    </p>
+                    <p style="margin: 5px 0 0; font-size: 1em; color: #333; font-weight: 500;"><?php echo $correo; ?></p>
                 </div>
 
-                <div style="flex: 0 0 20%;">
-                    <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; letter-spacing: 0.5px; display: block;">
+                <div style="width: 25%;">
+                    <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; display: block;">
                         <i class="fas fa-phone" style="color: #ff6b00; margin-right: 5px;"></i> Teléfono
                     </label>
-                    <p style="margin: 5px 0 0; font-size: 1.05em; color: #333; font-weight: 500;">
+                    <p style="margin: 5px 0 0; font-size: 1em; color: #333; font-weight: 500;">
                         <?php echo !empty($telefono) ? $telefono : '---'; ?>
                     </p>
                 </div>
             </div>
 
-            <div style="display: flex; gap: 40px; margin-bottom: 1.5em;">
-                <div>
+            <div style="display: flex; width: 100%; gap: 10px;">
+                <div style="width: 30%;">
                     <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; display: block;">
                         <i class="fas fa-user-tag" style="color: #ff6b00; margin-right: 5px;"></i> Rol
                     </label>
-                    <p style="margin: 5px 0 0; font-size: 1em; color: #333; font-weight: 500;"><?php echo $rol; ?></p>
+                    <p style="margin: 5px 0 0; font-size: 0.95em; color: #333; font-weight: 500;"><?php echo $rol; ?></p>
                 </div>
-                <div>
+                <div style="width: 45%;">
                     <label style="font-weight: bold; color: #999; font-size: 0.7em; text-transform: uppercase; display: block;">
                         <i class="fas fa-check-circle" style="color: #28a745; margin-right: 5px;"></i> Estatus
                     </label>
-                    <p style="margin: 5px 0 0; font-size: 1em; color: #28a745; font-weight: bold;">Activo</p>
+                    <p style="margin: 5px 0 0; font-size: 0.95em; color: #28a745; font-weight: bold;"><?php echo $estatus; ?></p></p>
                 </div>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px;">
-                <a href="editar_cuenta.php" style="text-decoration: none; background: #ff6b00; color: white; padding: 8px 20px; border-radius: 6px; font-size: 0.9em; font-weight: bold; display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-edit"></i> Editar Datos
-                </a>
-                <a href="eliminar_cuenta.php" onclick="return confirm('¿Borrar cuenta?')" style="text-decoration: none; background: #fff; color: #dc3545; border: 1.5px solid #dc3545; padding: 7px 20px; border-radius: 6px; font-size: 0.9em; font-weight: bold; display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-trash-alt"></i> Borrar Cuenta
-                </a>
-            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 5px; padding-top: 120px;">
+    <button onclick="abrirModalEditar()" button class="btn btn-primary btn-sm" style="background: #ff6b00; color: white; padding: 7px 18px; border-radius: 6px; font-size: 0.85em; font-weight: bold; display: flex; align-items: center; gap: 6px; text-decoration: none;">
+        <i class="fas fa-edit"></i> Editar Datos
+            </button>
+
+    <button onclick="confirmarEliminar('<?php echo $id_logueado; ?>', '<?php echo $rol; ?>')" 
+         class="btn btn-primary btn-sm" style="background: #fff; color: #dc3545; border: 1.5px solid #dc3545; padding: 6px 18px; border-radius: 6px; font-size: 0.85em; font-weight: bold; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+        <i class="fas fa-trash-alt"></i> Borrar Cuenta
+    </button>
+</div>
         </div>
     </div>
 </div>
     </main>
 
+<!-- ══════════════════════════════════════════════════════════
+     modal:editar usuarios
+══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalEditarUsuarios">
+    <div class="modal">
+        <div class="modal-header">
+            <h2><i class="fas fa-user"></i> Modificar perfil</h2>
+            <button class="modal-close" onclick="cerrarModal('modalEditarUsuarios')">
+                <i class="fas fa-xmark"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="formEditarPerfil" method="POST" action="actualizar_perfil.php">
+                <div class="form-group">
+                    <label class="form-label required">Nombres</label>
+                    <input type="text" name="nuevo_nombre" class="form-control" value="<?php echo $datos_usuario['nombreUser']; ?>" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label required">Apellidos</label>
+                        <input type="text" name="nuevo_apellido" class="form-control" value="<?php echo $datos_usuario['apellidosUser']; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Correo electrónico</label>
+                        <input type="email" name="nuevo_correo" class="form-control" value="<?php echo $correo; ?>" required>
+                    </div>
+                </div>
+                <div class="form-group">
+    <label class="form-label">Número de teléfono</label>
+    <input type="text" 
+           name="nuevo_telefono" 
+           class="form-control" 
+           value="<?php echo $telefono; ?>" 
+           placeholder="Ej. 631 7262 232"
+           pattern="[0-9]{8,15}" 
+           title="El teléfono debe tener entre 8 y 15 números"
+           oninput="this.value = this.value.replace(/[^0-9]/g, '');"> 
+           </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalEditarUsuarios')">Cancelar</button>
+            <button type="submit" form="formEditarPerfil" class="btn btn-primary" style="background: #ff6b00; border: none;">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+        </div>
+    </div>
+</div>
+
 <?php include 'includes/footer_scripts.php'; ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // JS para el sidebar
     const toggleBtn = document.getElementById('toggleSidebar');
     if(toggleBtn) {
         toggleBtn.addEventListener('click', function() {
@@ -141,7 +210,78 @@ require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol,
             document.getElementById('sidebarOverlay').classList.toggle('active');
         });
     }
-</script>
+function confirmarEliminar(id, rol) {
+    console.log("ID recibido:", id, "Rol recibido:", rol);
 
+    if (rol === 'ADMIN') {
+        Swal.fire({
+            title: 'No se puede realizar ese movimiento',
+            text: 'Como Administrador, no puedes eliminar tu propia cuenta por seguridad.',
+            icon: 'error',
+            confirmButtonColor: '#ff6b00'
+        });
+        return; 
+    }
+
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "Tu cuenta será Desactivada. Podras reactivarla en un lapzo de 30 dias.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ff6b00',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `dar_de_baja_cuenta.php?numeroUser=${id}`;
+        }
+    });
+}
+
+function abrirModal(id) {
+    const overlay = document.getElementById(id);
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function cerrarModal(id) {
+    const overlay = document.getElementById(id);
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function abrirModalEditar() { abrirModal('modalEditarUsuarios'); }
+
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const msj = urlParams.get('msj');
+    const errorText = urlParams.get('error_text');
+
+    if (msj === 'edit_ok') {
+        Swal.fire({
+            icon: 'success',
+            title: '¡Actualizado!',
+            text: 'Tus datos se guardaron correctamente.',
+            confirmButtonColor: '#ff6b00'
+        });
+    }
+
+    if (msj === 'edit_error') {
+        Swal.fire({
+            icon: 'error',
+            title: 'No se pudo actualizar',
+            text: errorText ? decodeURIComponent(errorText) : 'Ocurrió un error inesperado.',
+            confirmButtonColor: '#ff6b00'
+        });
+    }
+
+    if (msj) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+});
+</script>
 </body>
 </html>

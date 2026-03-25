@@ -10,6 +10,7 @@ if (isset($_POST['submit'])) {
         $stmt = $conn->prepare("SELECT contraseñaUser FROM usuarios WHERE correoUser = ?");
         $stmt->execute([$correo]);
         $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+        
         $es_valida = ($user_data && password_verify($pass_input, $user_data['contraseñaUser']));
 
         $stmt = $conn->prepare("CALL sp_login(?, ?)");

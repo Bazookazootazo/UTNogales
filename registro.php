@@ -287,6 +287,24 @@ document.getElementById('formRegistro').addEventListener('submit', function(e) {
         });
     });
 });
+window.addEventListener('DOMContentLoaded', (event) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const mensaje = urlParams.get('msj');
+
+    if (mensaje === 'cuenta_desactivada') {
+        Swal.fire({
+            title: 'Cuenta Desactivada',
+            html: 'Tu cuenta ha sido dada de baja correctamente.<br><br>' +
+                  '<b>Nota:</b> Tienes un periodo de <strong>30 días</strong> para reactivarla antes de que tus datos sean eliminados permanentemente.',
+            icon: 'info',
+            confirmButtonColor: '#E8630A',
+            background: '#1A1F2E',
+            color: '#fff'
+        });
+        
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+});
 </script>
 </body>
 </html>
