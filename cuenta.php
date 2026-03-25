@@ -265,7 +265,7 @@ function confirmarEliminar(id, rol) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = `dar_de_baja_cuenta.php?numeroUser=${id}`;
+            window.location.href = `actions/dar_de_baja_cuenta.php?numeroUser=${id}`;
         }
     });
 }
