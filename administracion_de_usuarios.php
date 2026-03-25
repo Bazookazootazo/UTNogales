@@ -1,7 +1,7 @@
 <?php 
 $pagina_actual = 'AdministracionUsuarios';
 session_start();
-include 'conexion.php'; 
+include 'config/conexion.php'; 
 
 if (!isset($_SESSION['id_usuario']) || $_SESSION['rol'] !== 'ADMIN') {
     header("Location: inicio.php"); 
@@ -48,7 +48,7 @@ $id_check = $_SESSION['id_usuario'];
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <title>MTB Sistema — Administración de Usuarios</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <link rel="stylesheet" href="mtb-dashboard.css" />
+    <link rel="stylesheet" href="assets/css/mtb-dashboard.css" />
     <style>
         .mtb-app { display: flex; width: 100%; min-height: 100vh; }
         .mtb-content { flex: 1; display: flex; flex-direction: column; background-color: #f4f7f6; }
@@ -180,7 +180,7 @@ $id_check = $_SESSION['id_usuario'];
         </div>
         
         <object>
-            <a href="cerrarSesion.php" title="Cerrar sesión" class="logout-icon">
+            <a href="actions/cerrarSesion.php" title="Cerrar sesión" class="logout-icon">
                 <i class="fas fa-right-from-bracket"></i>
             </a>
         </object>
@@ -279,7 +279,6 @@ $id_check = $_SESSION['id_usuario'];
         </div>
         <div class="modal-body">
             <form id="formEditarPerfil" method="POST" action="actualizar_perfil.php">
-                <form id="formEditarPerfil" method="POST" action="actualizar_perfil.php">
     <input type="hidden" name="id_usuario_a_editar" id="edit_id_user">
                 <div class="form-group">
                     <label class="form-label required">Nombres</label>

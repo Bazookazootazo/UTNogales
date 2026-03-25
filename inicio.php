@@ -1,8 +1,7 @@
-<<<<<<< HEAD
 <?php $pagina_actual = 'inicio'; ?>
 <?php
 session_start();
-include 'conexion.php'; 
+include 'config/conexion.php'; 
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: registro.php");
     exit();
@@ -41,19 +40,6 @@ $id_check = $_SESSION['id_usuario'];
         exit();
     }
 ?>
-
-<!DOCTYPE HTML>
-<html lang="es">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <title>MTB Sistema — Dashboard</title>
-=======
-<?php 
-$pagina_actual = 'inicio';
-require_once 'config/auth.php'; 
-?>
->>>>>>> 6570f7fed8af42ae14b5d289d778075e852666da
 
 <?php include_once 'includes/header_sidebar.php'; ?>
 
@@ -500,7 +486,6 @@ require_once 'config/auth.php';
     </div>
 </div>
 
-<<<<<<< HEAD
 
 <!-- ── TOAST CONTAINER ── -->
 <div class="toast-container" id="toastContainer"></div>
@@ -924,6 +909,3 @@ setInterval(checarEstatusVivo, 5000);
 </script>
 </body>
 </html>
-=======
-<?php include 'includes/footer_scripts.php'; ?>
->>>>>>> 6570f7fed8af42ae14b5d289d778075e852666da

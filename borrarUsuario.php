@@ -1,11 +1,11 @@
 <?php 
-require_once("conexion.php"); 
+require_once("config/conexion.php"); 
 session_start();
 
 if (isset($_GET['numeroUser'])) {
     $idABorrar = $_GET['numeroUser'];
     
-    $idSesionActual = $_SESSION['id_usuario'] ?? null; 
+    $idSesionActual = $_SESSION["id_usuario"] ?? null; 
     $rolSesion = $_SESSION['rol'] ?? ''; 
 
     if ($idABorrar == $idSesionActual && $rolSesion == 'ADMIN') {

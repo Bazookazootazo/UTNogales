@@ -1,8 +1,7 @@
 <?php 
 $pagina_actual = 'cuenta'; 
-<<<<<<< HEAD
 session_start();
-include 'conexion.php'; 
+include 'config/conexion.php'; 
 
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: registro.php");
@@ -46,18 +45,8 @@ $id_check = $_SESSION['id_usuario'];
         header("Location: index.php?error=" . urlencode("Tu sesión ha expirado o tu cuenta ha sido desactivada."));
         exit();
     }
-=======
-require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol, etc.
->>>>>>> 6570f7fed8af42ae14b5d289d778075e852666da
 ?>
-<!DOCTYPE HTML>
-<html lang="es">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <title>MTB Sistema — Mi Cuenta</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <link rel="stylesheet" href="assets/css/mtb-dashboard.css" />
+    <?php include_once 'includes/header_sidebar.php'; ?>
     <style>
         /* Estilo base del footer user */
 .sidebar-user {
@@ -112,12 +101,6 @@ require_once 'config/auth.php'; // Esto ya trae $nombre_completo, $correo, $rol,
             padding: 40px;
         }
     </style>
-</head>
-<body>
-
-<div class="mtb-app">
-
-    <?php include_once 'includes/header_sidebar.php'; ?>
 
     <main class="mtb-content">
         

@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UTN - Acceso al Sistema</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<<<<<<< HEAD
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="assets/css/index.css">
     <link rel="icon" href="css/logo_utn.ico">
     <style>
          /* Estilo de los grupos de input */
@@ -41,9 +40,6 @@
 
 
 </style>
-=======
-    <link rel="stylesheet" href="assets/css/index.css">
->>>>>>> 6570f7fed8af42ae14b5d289d778075e852666da
 </head>
 <body>
     <div class="login-wrapper">

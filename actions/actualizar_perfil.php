@@ -16,12 +16,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['id_usuario'])) {
     $stmt->closeCursor();
 
     if ($res && $res['estado'] === 'EXITO') {
-        header("Location: cuenta.php?msj=edit_ok");
+        header("Location: ../cuenta.php?msj=edit_ok");
     } else {
-        header("Location: cuenta.php?msj=edit_error&error_text=" . urlencode($res['mensaje']));
+        header("Location: ../cuenta.php?msj=edit_error&error_text=" . urlencode($res['mensaje']));
     }
 } catch (PDOException $e) {
-    header("Location: cuenta.php?msj=edit_error&error_text=Error de servidor");
+    header("Location: ../cuenta.php?msj=edit_error&error_text=Error de servidor");
 }
     exit();
 }

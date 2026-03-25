@@ -1,7 +1,7 @@
 <?php $pagina_actual = 'inicio'; ?>
 <?php
 session_start();
-include 'conexion.php'; 
+include 'config/conexion.php'; 
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: registro.php");
     exit();

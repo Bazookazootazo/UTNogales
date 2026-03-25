@@ -1,5 +1,5 @@
 <?php 
-require_once("conexion.php");
+require_once("config/conexion.php");
 session_start();
 
 if (isset($_GET['numeroUser'])) {

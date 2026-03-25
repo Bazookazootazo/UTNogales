@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'conexion.php';
+include 'config/conexion.php';
 
 if (isset($_SESSION['id_reactivar'])) {
     $id = $_SESSION['id_reactivar'];

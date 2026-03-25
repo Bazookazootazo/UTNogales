@@ -6,7 +6,7 @@ require_once 'config/auth.php';
 <?php include_once 'includes/header_sidebar.php'; ?>
 
     <div class="layout">
-        <?php include 'sidebar.php'; ?> <main class="content">
+<main class="content">
             <h2>Módulo de Inscripciones</h2>
 
             <?php if ($_SESSION['rol'] === 'cliente'): ?>
