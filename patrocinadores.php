@@ -47,7 +47,7 @@ try {
 }
 try {
 
-    $query_lista = "SELECT numeroPatrocinador, nombrePatrocinador, contactoPatrocinador, logo_patrocinador FROM patrocinador";
+    $query_lista = "SELECT numeroPatrocinador, nombrePatrocinador, contactoPatrocinador, logo_patrocinador, estatus FROM patrocinador";
     $stmt_lista = $conn->prepare($query_lista);
     $stmt_lista->execute();
     $patrocinadores_lista = $stmt_lista->fetchAll(PDO::FETCH_ASSOC);
@@ -278,7 +278,7 @@ html, body {
                         <th>Logo</th>
                         <th>Empresa / Patrocinador</th>
                         <th>Contacto Principal</th>
-                        <!-- <th style="text-align: center;">Acciones</th> -->
+                        <th style="text-align: center;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -291,30 +291,30 @@ html, body {
                         </td>
                         <td style="font-weight: 600;"><?php echo htmlspecialchars($p['nombrePatrocinador']); ?></td>
                         <td><?php echo htmlspecialchars($p['contactoPatrocinador']); ?></td>
-                   <!--     <td style="text-align: center; display: flex; gap: 8px; justify-content: center;">
+                   <td style="text-align: center; display: flex; gap: 8px; justify-content: center;">
                             <a href="#" class="btn-accion btn-actualizar" style="border: 1px solid #ff6b00;" 
                                onclick="abrirModalEditarPatrocinador(<?php echo htmlspecialchars(json_encode($p)); ?>)">
                                 <i class="fas fa-edit"></i>
                             </a>
 
-                            <?php if($p['estatus'] == 'Activo'): ?>
+                            <?php if($p['estatus'] == 'ACTIVO'): ?>
                                 <a href="#" class="btn-accion btn-desactivar" style="border: 1px solid #666;" 
                                    title="Suspender patrocinio"
-                                   onclick="cambiarEstatusPatrocinador(<?php echo $p['id_patrocinador']; ?>, 'Inactivo')">
+                                   onclick="cambiarEstatusPatrocinador(<?php echo $p['numeroPatrocinador']; ?>, 'Inactivo')">
                                     <i class="fas fa-ban"></i>
                                 </a>
                             <?php else: ?>
                                 <a href="#" class="btn-accion btn-reactivar" style="border: 1px solid #28a745;" 
                                    title="Reactivar patrocinio"
-                                   onclick="cambiarEstatusPatrocinador(<?php echo $p['id_patrocinador']; ?>, 'Activo')">
+                                   onclick="cambiarEstatusPatrocinador(<?php echo $p['numeroPatrocinador']; ?>, 'Activo')">
                                     <i class="fas fa-check-circle"></i>
                                 </a>
                             <?php endif; ?>
 
                             <a href="#" class="btn-accion btn-delete" 
-                               onclick="eliminarPatrocinador(<?php echo $p['id_patrocinador']; ?>)">
+                               onclick="eliminarPatrocinador(<?php echo $p['numeroPatrocinador']; ?>)">
                                 <i class="fas fa-trash-alt"></i>
-                            </a> -->
+                            </a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -394,201 +394,63 @@ html, body {
         </div>
     </div>
 </div>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL: EDITAR PATROCINADOR
+══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalEditarPatrocinador">
+    <div class="modal">
+        <div class="modal-header">
+            <h2><i class="fas fa-handshake"></i> Modificar Patrocinador</h2>
+            <button class="modal-close" onclick="cerrarModal('modalEditarPatrocinador')">
+                <i class="fas fa-xmark"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="formEditarPatrocinador" method="POST" action="actions/actualizar_patrocinador.php" enctype="multipart/form-data">
+                <input type="hidden" name="id_patrocinador" id="edit_id_patrocinador">
+                
+                <div class="form-group">
+                    <label class="form-label required">Nombre de la Empresa</label>
+                    <input type="text" name="nombre" id="edit_nombre_patrocinador" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Contacto</label>
+                    <input type="text" 
+                           name="telefono" 
+                           id="edit_telefono_patrocinador"
+                           class="form-control" 
+                           placeholder="Ej. 631 7262 232"
+                           pattern="[0-9]{8,15}" 
+                           title="El teléfono debe tener entre 8 y 15 números"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '');"> 
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Actualizar Logo (Opcional)</label>
+                    <input type="file" name="logo" class="form-control" accept="image/*">
+                    <small style="color: #666;">Deje vacío para mantener el logo actual.</small>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalEditarPatrocinador')">Cancelar</button>
+            <button type="submit" form="formEditarPatrocinador" class="btn btn-primary" style="background: #ff6b00; border: none;">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- ── TOAST CONTAINER ── -->
 <div class="toast-container" id="toastContainer"></div>
-
-
 <!-- ══════════════════════════════════════════════════════════
      JAVASCRIPT
 ══════════════════════════════════════════════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-/* ────────────────────────────────────────────────────────────
-   DATOS MOCK — En producción, estos vendrían del backend (PHP/AJAX)
-──────────────────────────────────────────────────────────── */
-const DATA_EVENTOS = [
-    { nombre: 'Enduro Nogales',     pista: 'La Rumorosa',        fecha: '2026-04-05', inscritos: 78,  estatus: 'Abierto' },
-    { nombre: 'XCO Hermosillo',     pista: 'Cerro de la Silla',  fecha: '2026-04-19', inscritos: 112, estatus: 'Abierto' },
-    { nombre: 'DH Sierra Madre',    pista: 'Sierra Fría',        fecha: '2026-05-10', inscritos: 55,  estatus: 'Próximo' },
-    { nombre: 'Cross Country Ures', pista: 'Monte Albán',        fecha: '2026-05-24', inscritos: 30,  estatus: 'Próximo' },
-    { nombre: 'Marathon Alamos',    pista: 'Alamos Trail',       fecha: '2026-06-07', inscritos: 14,  estatus: 'Convocatoria' },
-];
 
-const DATA_RANKING = [
-    { pos: 1, nombre: 'Carlos Mendoza',  puntos: 480, equipo: 'Trek Racing MX' },
-    { pos: 2, nombre: 'Sofía Gutiérrez', puntos: 440, equipo: 'Canyon Women' },
-    { pos: 3, nombre: 'Roberto Vega',    puntos: 395, equipo: 'Specialized BC' },
-    { pos: 4, nombre: 'Ana Torres',      puntos: 360, equipo: 'Giant Team NL' },
-    { pos: 5, nombre: 'Luis Herrera',    puntos: 310, equipo: 'Trek Racing MX' },
-];
-
-/* ────────────────────────────────────────────────────────────
-   ESTADO DE LA PAGINACIÓN
-──────────────────────────────────────────────────────────── */
-let paginaActual = 1;
-let tamPagina    = 10;
-let datosFiltrados = [...DATA_INSCRIPCIONES];
-
-/* ────────────────────────────────────────────────────────────
-   RENDER: TABLA DE EVENTOS
-──────────────────────────────────────────────────────────── */
-function renderEventos() {
-    const estatusClase = { 'Abierto': 'badge-success', 'Próximo': 'badge-info', 'Convocatoria': 'badge-warning' };
-    const tbody = document.getElementById('tbodyEventos');
-    tbody.innerHTML = DATA_EVENTOS.map(e => `
-        <tr>
-            <td><strong>${e.nombre}</strong></td>
-            <td><i class="fas fa-map-pin" style="color:var(--mtb-primary);margin-right:4px;"></i>${e.pista}</td>
-            <td>${formatFecha(e.fecha)}</td>
-            <td><span style="font-weight:700;">${e.inscritos}</span> <span style="color:var(--mtb-gray-500);font-size:.8rem;">/ cupo</span></td>
-            <td><span class="badge ${estatusClase[e.estatus] || 'badge-dark'}"><span class="dot"></span>${e.estatus}</span></td>
-        </tr>
-    `).join('');
-}
-
-/* ────────────────────────────────────────────────────────────
-   RENDER: RANKING
-──────────────────────────────────────────────────────────── */
-function renderRanking() {
-    const medallas = ['🥇','🥈','🥉'];
-    const list = document.getElementById('rankingList');
-    list.innerHTML = DATA_RANKING.map(r => `
-        <div style="display:flex;align-items:center;gap:12px;">
-            <span style="font-size:1.3rem;width:28px;text-align:center;">${medallas[r.pos-1] || r.pos}</span>
-            <div class="avatar avatar-sm">${r.nombre.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
-            <div style="flex:1;">
-                <div style="font-weight:700;font-size:.875rem;color:var(--mtb-dark);">${r.nombre}</div>
-                <div style="font-size:.75rem;color:var(--mtb-gray-600);">${r.equipo}</div>
-            </div>
-            <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:800;color:var(--mtb-primary);">${r.puntos} <span style="font-size:.65rem;font-weight:400;color:var(--mtb-gray-500);">pts</span></div>
-        </div>
-    `).join('');
-}
-
-/* ────────────────────────────────────────────────────────────
-   RENDER: TABLA DE INSCRIPCIONES (con paginación)
-──────────────────────────────────────────────────────────── */
-function renderInscripciones() {
-    const inicio = (paginaActual - 1) * tamPagina;
-    const fin    = inicio + tamPagina;
-    const pagina = datosFiltrados.slice(inicio, fin);
-
-    const estatusBadge = {
-        'Confirmado': 'badge-success',
-        'Pendiente':  'badge-warning',
-        'Cancelado':  'badge-danger',
-    };
-
-    const tbody = document.getElementById('tbodyInscripciones');
-
-    if (pagina.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="table-empty"><i class="fas fa-inbox"></i>Sin resultados para los filtros aplicados</td></tr>`;
-    } else {
-        tbody.innerHTML = pagina.map(ins => `
-            <tr>
-                <td><strong>#${ins.dorsal}</strong></td>
-                <td>
-                    <div style="display:flex;align-items:center;gap:8px;">
-                        <div class="avatar avatar-sm">${ins.deportista.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
-                        <span style="font-weight:600;">${ins.deportista}</span>
-                    </div>
-                </td>
-                <td>${ins.evento}</td>
-                <td><span class="badge badge-dark">${ins.categoria}</span></td>
-                <td><i class="fas fa-map-pin" style="color:var(--mtb-primary);margin-right:4px;font-size:.75rem;"></i>${ins.pista}</td>
-                <td style="color:var(--mtb-gray-600);font-size:.85rem;">${formatFecha(ins.fecha)}</td>
-                <td><span class="badge ${estatusBadge[ins.estatus] || 'badge-dark'}"><span class="dot"></span>${ins.estatus}</span></td>
-                <td class="center">
-                    <div style="display:flex;gap:4px;justify-content:center;">
-                        <button class="btn btn-ghost btn-sm" title="Ver detalle" onclick="verDetalle(${ins.dorsal})"><i class="fas fa-eye"></i></button>
-                        <button class="btn btn-ghost btn-sm" title="Editar" style="color:var(--mtb-info)"><i class="fas fa-pen"></i></button>
-                        <button class="btn btn-ghost btn-sm" title="Eliminar" style="color:var(--mtb-danger)" onclick="eliminarFila(${ins.dorsal})"><i class="fas fa-trash"></i></button>
-                    </div>
-                </td>
-            </tr>
-        `).join('');
-    }
-
-    renderPaginacion();
-}
-
-/* ────────────────────────────────────────────────────────────
-   RENDER: PAGINACIÓN
-──────────────────────────────────────────────────────────── */
-function renderPaginacion() {
-    const total   = datosFiltrados.length;
-    const totalPag = Math.ceil(total / tamPagina);
-    const inicio  = total === 0 ? 0 : (paginaActual - 1) * tamPagina + 1;
-    const fin     = Math.min(paginaActual * tamPagina, total);
-
-    document.getElementById('paginacionInfo').textContent =
-        `Mostrando ${inicio}–${fin} de ${total} inscripciones`;
-
-    const container = document.getElementById('paginacionControls');
-    let html = '';
-
-    // Anterior
-    html += `<button class="page-btn" onclick="irPagina(${paginaActual-1})" ${paginaActual===1?'disabled':''}><i class="fas fa-chevron-left"></i></button>`;
-
-    // Números
-    const desde = Math.max(1, paginaActual - 2);
-    const hasta = Math.min(totalPag, paginaActual + 2);
-    if (desde > 1) html += `<button class="page-btn" onclick="irPagina(1)">1</button>${desde > 2 ? '<span style="padding:0 4px;color:var(--mtb-gray-500)">…</span>' : ''}`;
-    for (let i = desde; i <= hasta; i++) {
-        html += `<button class="page-btn ${i===paginaActual?'active':''}" onclick="irPagina(${i})">${i}</button>`;
-    }
-    if (hasta < totalPag) html += `${hasta < totalPag-1 ? '<span style="padding:0 4px;color:var(--mtb-gray-500)">…</span>' : ''}<button class="page-btn" onclick="irPagina(${totalPag})">${totalPag}</button>`;
-
-    // Siguiente
-    html += `<button class="page-btn" onclick="irPagina(${paginaActual+1})" ${paginaActual===totalPag||totalPag===0?'disabled':''}><i class="fas fa-chevron-right"></i></button>`;
-
-    container.innerHTML = html;
-}
-
-function irPagina(n) {
-    const total = Math.ceil(datosFiltrados.length / tamPagina);
-    if (n < 1 || n > total) return;
-    paginaActual = n;
-    renderInscripciones();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function cambiarTamano() {
-    tamPagina = parseInt(document.getElementById('pageSize').value);
-    paginaActual = 1;
-    renderInscripciones();
-}
-
-/* ────────────────────────────────────────────────────────────
-   FILTROS
-──────────────────────────────────────────────────────────── */
-function aplicarFiltros() {
-    const filtroEvento    = document.getElementById('filtroEvento').value.toLowerCase();
-    const filtroCategoria = document.getElementById('filtroCategoria').value.toLowerCase();
-    const filtroEstatus   = document.getElementById('filtroEstatus').value.toLowerCase();
-    const busqueda        = document.getElementById('buscarDeportista').value.toLowerCase().trim();
-
-    datosFiltrados = DATA_INSCRIPCIONES.filter(ins => {
-        const coincideEvento    = !filtroEvento    || ins.evento.toLowerCase().includes(filtroEvento);
-        const coincideCategoria = !filtroCategoria || ins.categoria.toLowerCase() === filtroCategoria;
-        const coincideEstatus   = !filtroEstatus   || ins.estatus.toLowerCase() === filtroEstatus;
-        const coincideBusqueda  = !busqueda        || ins.deportista.toLowerCase().includes(busqueda) || String(ins.dorsal).includes(busqueda);
-        return coincideEvento && coincideCategoria && coincideEstatus && coincideBusqueda;
-    });
-
-    paginaActual = 1;
-    renderInscripciones();
-}
-
-function limpiarFiltros() {
-    document.getElementById('filtroEvento').value    = '';
-    document.getElementById('filtroCategoria').value = '';
-    document.getElementById('filtroEstatus').value   = '';
-    document.getElementById('buscarDeportista').value = '';
-    datosFiltrados = [...DATA_INSCRIPCIONES];
-    paginaActual = 1;
-    renderInscripciones();
-}
 
 /* ────────────────────────────────────────────────────────────
    MODALES
@@ -606,6 +468,10 @@ function cerrarModal(id) {
 }
 
 function abrirModalPatrocinador() { abrirModal('modalPatrocinador'); }
+function abrirModalEditarPatrocinador(patrocinador) {
+    document.getElementById('edit_id_patrocinador').value = patrocinador.numeroPatrocinador;
+    abrirModal('modalEditarPatrocinador');
+}
 function abrirModalEvento()      { abrirModal('modalEvento'); }
 
 // Cerrar modal al hacer clic en el overlay
@@ -615,63 +481,6 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
     });
 });
 
-// Guardar inscripción (demo)
-function guardarInscripcion(e) {
-    if (e) e.preventDefault();
-    cerrarModal('modalInscripcion');
-    showToast('Inscripción guardada correctamente', 'success');
-}
-
-/* ────────────────────────────────────────────────────────────
-   DETALLE
-──────────────────────────────────────────────────────────── */
-function verDetalle(dorsal) {
-    const ins = DATA_INSCRIPCIONES.find(i => i.dorsal === dorsal);
-    if (!ins) return;
-
-    const estatusBadge = { 'Confirmado': 'badge-success', 'Pendiente': 'badge-warning', 'Cancelado': 'badge-danger' };
-
-    document.getElementById('modalDetalleBody').innerHTML = `
-        <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
-            <div class="avatar avatar-lg">${ins.deportista.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
-            <div>
-                <div style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--mtb-dark);">${ins.deportista}</div>
-                <div style="color:var(--mtb-gray-600);font-size:.875rem;">Dorsal #${ins.dorsal} · ${ins.categoria}</div>
-            </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-            <div class="card" style="padding:16px;">
-                <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;color:var(--mtb-gray-500);letter-spacing:.5px;margin-bottom:4px;">Evento</div>
-                <div style="font-weight:700;">${ins.evento}</div>
-            </div>
-            <div class="card" style="padding:16px;">
-                <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;color:var(--mtb-gray-500);letter-spacing:.5px;margin-bottom:4px;">Pista</div>
-                <div style="font-weight:700;">${ins.pista}</div>
-            </div>
-            <div class="card" style="padding:16px;">
-                <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;color:var(--mtb-gray-500);letter-spacing:.5px;margin-bottom:4px;">Fecha</div>
-                <div style="font-weight:700;">${formatFecha(ins.fecha)}</div>
-            </div>
-            <div class="card" style="padding:16px;">
-                <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;color:var(--mtb-gray-500);letter-spacing:.5px;margin-bottom:4px;">Estatus</div>
-                <span class="badge ${estatusBadge[ins.estatus] || 'badge-dark'}">${ins.estatus}</span>
-            </div>
-        </div>
-    `;
-    abrirModal('modalDetalle');
-}
-
-/* ────────────────────────────────────────────────────────────
-   ELIMINAR FILA (demo)
-──────────────────────────────────────────────────────────── */
-function eliminarFila(dorsal) {
-    if (!confirm(`¿Eliminar inscripción #${dorsal}?`)) return;
-    const idx = DATA_INSCRIPCIONES.findIndex(i => i.dorsal === dorsal);
-    if (idx > -1) DATA_INSCRIPCIONES.splice(idx, 1);
-    datosFiltrados = datosFiltrados.filter(i => i.dorsal !== dorsal);
-    renderInscripciones();
-    showToast('Inscripción eliminada', 'danger');
-}
 
 /* ────────────────────────────────────────────────────────────
    SIDEBAR RESPONSIVE
@@ -709,21 +518,7 @@ function showToast(msg, tipo = 'primary') {
     }, 3000);
 }
 
-/* ────────────────────────────────────────────────────────────
-   UTILIDADES
-──────────────────────────────────────────────────────────── */
-function formatFecha(iso) {
-    const [y, m, d] = iso.split('-');
-    const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-    return `${parseInt(d)} ${meses[parseInt(m)-1]} ${y}`;
-}
 
-
-document.addEventListener('DOMContentLoaded', function() {
-    renderEventos();
-    renderRanking();
-    renderInscripciones();
-});
 </script>
 
 <script>
@@ -774,7 +569,19 @@ document.addEventListener('DOMContentLoaded', function() {
             limpiarURL();
         });
     }
-
+    if (msg === 'actualizado_ok')
+    {
+        Swal.fire({
+            title: '¡Patrocinador actualizado!',
+            text: 'Los cambios se han guardado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#E8630A'
+        }).then(() => {
+            limpiarURL();
+        });
+    }
+    
+    
  function limpiarURL() {
         const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
         window.history.replaceState({}, document.title, cleanUrl);

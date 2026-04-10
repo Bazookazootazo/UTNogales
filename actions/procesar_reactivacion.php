@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'config/conexion.php';
+include '../config/conexion.php';
 
 if (isset($_SESSION['id_reactivar'])) {
     $id = $_SESSION['id_reactivar'];
@@ -18,7 +18,7 @@ if (isset($_SESSION['id_reactivar'])) {
         $_SESSION['rol'] = $user['rol']; 
 
         unset($_SESSION['id_reactivar']); 
-        header("Location: inicio.php?msg=bienvenido_de_nuevo_ok");
+        header("Location: ../inicio.php?msg=bienvenido_de_nuevo_ok");
     } else {
         header("Location: index.php?error=Error al reactivar cuenta.");
     }

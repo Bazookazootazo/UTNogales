@@ -56,7 +56,7 @@
                 </div>
             <?php endif; ?>
 
-            <form method="post" action="procesar_reactivacion.php">
+            <form method="post" action="actions/procesar_reactivacion.php">
                <div class="input-group">
                     <label>Notamos que tu cuenta está desactivada. Si decides reactivarla hoy, conservaras todas tus inscripciones y estadisticas previas.</label>
                     </div>

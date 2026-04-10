@@ -18,9 +18,9 @@ if (isset($_GET['numeroUser'])) {
     if ($result) {
         if ($idABorrar == $idSesionActual) {
             session_destroy();
-            header("location: ../login.php?msj=cuenta_eliminada");
+            header("location: ../index.php?msj=cuenta_eliminada");
         } else {
-            header("location: ../administracionCuentas.php?msj=usuario_eliminado");
+            header("location: ../administracion_de_usuarios.php?msj=usuario_eliminado");
         }
     } else {
         echo "Error al intentar borrar el registro: " . mysqli_error($con);

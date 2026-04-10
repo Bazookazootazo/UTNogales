@@ -214,7 +214,7 @@ $id_check = $_SESSION['id_usuario'];
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = `borrarUsuario.php?numeroUser=${id}`;
+                window.location.href = `actions/borrarUsuario.php?numeroUser=${id}`;
             }
         });
     }
