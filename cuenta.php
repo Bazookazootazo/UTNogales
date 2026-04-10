@@ -47,6 +47,12 @@ $id_check = $_SESSION['id_usuario'];
     }
 ?>
     <?php include_once 'includes/header_sidebar.php'; ?>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi cuenta</title>
+<link rel="stylesheet" href="assets/css/mtb-dashboard.css">
     <style>
         /* Color naranja para el item activo en el footer */
 .sidebar-user.active {
@@ -58,6 +64,8 @@ $id_check = $_SESSION['id_usuario'];
     color: #ff6b00; /* Texto del nombre en naranja */
 }
         </style>
+    </head>
+<body>
     <main class="mtb-content">
         
         <header class="mtb-topbar" style="background: #fff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0;">
@@ -150,7 +158,7 @@ $id_check = $_SESSION['id_usuario'];
             </button>
         </div>
         <div class="modal-body">
-            <form id="formEditarPerfil" method="POST" action="actualizar_perfil.php">
+            <form id="formEditarPerfil" method="POST" action="actions/actualizar_perfil.php">
                 <div class="form-group">
                     <label class="form-label required">Nombres</label>
                     <input type="text" name="nuevo_nombre" class="form-control" value="<?php echo $datos_usuario['nombreUser']; ?>" required>

@@ -1,8 +1,6 @@
 <?php
 include '../config/conexion.php';
 header('Content-Type: application/json');
-
-// Evita que cualquier error de texto se mezcle con el JSON
 ob_start();
 
 $res = ["status" => "error", "message" => "Error de conexión"];
@@ -14,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (isset($_FILES['logo_archivo']) && $_FILES['logo_archivo']['error'] == 0) {
         $logo = time() . "_" . $_FILES['logo_archivo']['name'];
-        move_uploaded_file($_FILES['logo_archivo']['tmp_name'], "../img/patrocinadores/" . $logo);
+        move_uploaded_file($_FILES['logo_archivo']['tmp_name'], "../assets/img/patrocinadores/" . $logo);
     }
 
     try {

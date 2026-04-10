@@ -50,42 +50,28 @@ $id_check = $_SESSION['id_usuario'];
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="assets/css/mtb-dashboard.css" />
         <?php include_once 'includes/header_sidebar.php'; ?>
-
-    <style>
-        .mtb-app { display: flex; width: 100%; min-height: 100vh; }
-        .mtb-content { flex: 1; display: flex; flex-direction: column; background-color: #f4f7f6; }
-        
-        /* Estilos de la Tabla */
-        .tabla-seccion { padding: 30px; }
-        .tabla-card { background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #eee; }
-        .tabla-header { background: #2f3430; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #ff6b00; }
-        
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 15px; background: #fafafa; color: #888; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #eee; }
-        td { padding: 15px; border-bottom: 1px solid #f1f1f1; color: #444; font-size: 0.9rem; }
-        tr:hover { background-color: #fcfcfc; }
-
-        .badge-rol { background: #2f3430; color: white; padding: 4px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: bold; }
-        .estatus-activo { color: #28a745; font-weight: bold; }
-        .estatus-inactivo { color: #dc3545; font-weight: bold; }
-        
-        .btn-accion { padding: 8px; border-radius: 6px; transition: 0.3s; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
-        .btn-delete { color: #dc3545; border: 1px solid #dc3545; background: transparent; }
-        .btn-delete:hover { background: #dc3545; color: white; }
-        .btn-desactivar { color: #666; border: 1px solid ##666; background: transparent; }
-        .btn-desactivar:hover { background: #666; color: white; }
-        .btn-actualizar { color: #ff6b00; border: 1px solid #ff6b00; background: transparent; }
-        .btn-actualizar:hover { background: #e8630a; color: white;}
-        .btn-reactivar { color: #28a745; border: 1px solid #28a745; background: transparent; }
-        .btn-reactivar:hover { background: #218838; color: white; }
-    </style>
 </head>
+<style>
+.mtb-app { 
+  display: flex; 
+  width: 100%; 
+  min-height: 100vh; 
+}
+        
+.mtb-content { 
+  flex: 1; 
+  display: flex; 
+  flex-direction: 
+  column; 
+  background-color: #f4f7f6; }
+
+.tabla-seccion { 
+    padding: 30px; 
+  }
+
+</style>
 <body>
-
 <div class="mtb-app">
-
-   
-
     <main class="mtb-content">
         <header class="mtb-topbar" style="background: #fff; padding: 15px 30px; border-bottom: 1px solid #e0e0e0;">
             <div class="topbar-title">Administración de Usuarios</div>
@@ -176,7 +162,7 @@ $id_check = $_SESSION['id_usuario'];
             </button>
         </div>
         <div class="modal-body">
-            <form id="formEditarPerfil" method="POST" action="actualizar_perfil.php">
+            <form id="formEditarPerfil" method="POST" action="actions/actualizar_perfil.php">
     <input type="hidden" name="id_usuario_a_editar" id="edit_id_user">
                 <div class="form-group">
                     <label class="form-label required">Nombres</label>

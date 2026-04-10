@@ -1563,4 +1563,177 @@ select.form-control { cursor: pointer; }
 .animate-in:nth-child(5) { animation-delay: 0.28s; }
 .animate-in:nth-child(6) { animation-delay: 0.35s; }
 
-/* ─── FIN DEL STYLESHEET ───────────────────────────────────── */
+/* rellenado en el apartado de patrocinadores */
+
+.mtb-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.stat-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.stat-details h3 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #333;
+}
+
+.stat-details p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* estilo para la tabla de manejo de usuarios */
+
+.mtb-app { 
+  display: flex; 
+  width: 100%; 
+  min-height: 100vh; 
+}
+        
+.mtb-content { 
+  flex: 1; 
+  display: flex; 
+  flex-direction: 
+  column; 
+  background-color: #f4f7f6; }
+
+.tabla-card { 
+  background: white; 
+  border-radius: 12px; 
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
+  overflow: hidden; 
+  border: 1px solid #eee; 
+}
+
+.tabla-header { 
+  background: #2f3430; 
+  color: white; 
+  padding: 20px; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  border-bottom: 4px solid #ff6b00; 
+}
+        
+table { 
+  width: 100%; 
+  border-collapse: collapse; 
+}
+      
+th { 
+  text-align: left; 
+  padding: 15px; 
+  background: #fafafa; 
+  color: #888; 
+  font-size: 0.75rem; 
+  text-transform: uppercase; 
+  letter-spacing: 1px;
+   border-bottom: 2px solid #eee;
+   }
+        
+ td { 
+  padding: 15px; 
+  border-bottom: 
+  1px solid #f1f1f1; 
+  color: #444; 
+  font-size: 0.9rem; 
+}
+        
+tr:hover { 
+  background-color: #fcfcfc; 
+}
+
+.badge-rol { 
+  background: #2f3430; 
+  color: white; 
+  padding: 4px 10px; 
+  border-radius: 50px; 
+  font-size: 0.7rem; 
+  font-weight: bold; 
+}
+        
+.estatus-activo { 
+  color: #28a745; 
+  font-weight: bold; 
+}
+        
+.estatus-inactivo {
+   color: #dc3545; 
+   font-weight: bold; 
+  }
+        
+.btn-accion { 
+  padding: 8px; 
+  border-radius: 6px; 
+  transition: 0.3s; 
+  text-decoration: none; 
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center; 
+}
+        
+.btn-delete { 
+  color: #dc3545; 
+  border: 1px solid #dc3545; 
+  background: transparent; 
+}
+        
+.btn-delete:hover { 
+  background: #dc3545; 
+  color: white; 
+}
+        
+.btn-desactivar { 
+  color: #666; 
+  border: 1px solid #666; 
+  background: transparent; 
+}
+        
+.btn-desactivar:hover { 
+  background: #666; 
+  color: white; 
+}
+        
+.btn-actualizar { 
+  color: #ff6b00; 
+  border: 1px solid #ff6b00; 
+  background: transparent; 
+}
+        
+.btn-actualizar:hover { 
+  background: #e8630a; 
+  color: white;
+}
+        
+.btn-reactivar { 
+  color: #28a745; 
+  border: 1px solid #28a745; 
+  background: transparent; 
+}
+        
+.btn-reactivar:hover { 
+  background: #218838; 
+  color: white; 
+}
