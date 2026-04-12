@@ -1,8 +1,8 @@
 <?php $pagina_actual = 'pistas'; ?>
 <?php
 session_start();
-include 'config/conexion.php'; 
-
+include 'config/conexion.php';
+ 
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: registro.php");
     exit();
@@ -10,21 +10,36 @@ if (!isset($_SESSION['id_usuario'])) {
 
 $id_logueado = $_SESSION['id_usuario'];
 try {
-    $query_user = "SELECT nombreUser, apellidosUser, rol, estatus FROM usuarios WHERE numeroUser = ?";
+    $query_user = "SELECT nombreUser, apellidosUser, rol FROM usuarios WHERE numeroUser = ?";
     $stmt = $conn->prepare($query_user);
     $stmt->execute([$id_logueado]);
     $datos_usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($datos_usuario && strtoupper($datos_usuario['estatus']) !== 'INACTIVO') {
+    if ($datos_usuario) {
         $nombre_completo = $datos_usuario['nombreUser'] . " " . $datos_usuario['apellidosUser'];
         $rol = $datos_usuario['rol'];
+        $n = mb_substr($datos_usuario['nombreUser'], 0, 1);
+        $a = mb_substr($datos_usuario['apellidosUser'], 0, 1);
+        $iniciales = strtoupper($n . $a);
     } else {
         session_destroy();
-        header("Location: index.php?error=" . urlencode("Tu sesión ha expirado o tu cuenta ha sido desactivada."));
+        header("Location: registro.php");
         exit();
     }
 } catch (PDOException $e) {
     die("Error al obtener datos: " . $e->getMessage());
 }
+$id_check = $_SESSION['id_usuario'];
+    
+    $stmt_check = $conn->prepare("SELECT estatus FROM usuarios WHERE numeroUser = ?");
+    $stmt_check->execute([$id_check]);
+    $user_status = $stmt_check->fetch(PDO::FETCH_ASSOC);
+
+    if (!$user_status || strtoupper($user_status['estatus']) === 'Inactivo') {
+        session_unset();
+        session_destroy();
+        header("Location: index.php?error=" . urlencode("Tu sesión ha expirado o tu cuenta ha sido desactivada."));
+        exit();
+    }
 
 // Cargar datos según el rol usando las vistas que creamos
 try {
@@ -240,7 +255,7 @@ try {
                     </div>
                     <div class="form-group">
                         <label class="form-label">Imagen de la pista</label>
-                        <input type="file" class="form-control" name="imagen_archivo" accept="image/*">
+                        <input type="file" class="form-control" name="imagen_archivo" accept=".png, .jpg, .jpeg, image/png, image/jpeg">
                     </div>
                     <div class="modal-footer" style="padding: 20px 0 0 0;">
                         <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalPista')">Cancelar</button>
@@ -278,7 +293,7 @@ try {
                     </div>
                     <div class="form-group">
                         <label class="form-label">Actualizar Imagen (Opcional)</label>
-                        <input type="file" name="imagen_archivo" class="form-control" accept="image/*">
+                        <input type="file" class="form-control" name="imagen_archivo" accept=".png, .jpg, .jpeg, image/png, image/jpeg">
                     </div>
                 </form>
             </div>
