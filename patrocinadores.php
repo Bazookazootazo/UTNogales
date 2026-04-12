@@ -1,7 +1,8 @@
 <?php $pagina_actual = 'patrocinadores'; ?>
 <?php
 session_start();
-include 'config/conexion.php'; 
+include 'config/conexion.php';
+ 
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: registro.php");
     exit();
@@ -39,12 +40,14 @@ $id_check = $_SESSION['id_usuario'];
         header("Location: index.php?error=" . urlencode("Tu sesión ha expirado o tu cuenta ha sido desactivada."));
         exit();
     }
+
 try {
     $query = $conn->query("SELECT logo_patrocinador, nombrePatrocinador FROM patrocinador");
     $patrocinadores = $query->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     $patrocinadores = [];
 }
+
 try {
 
     $query_lista = "SELECT numeroPatrocinador, nombrePatrocinador, contactoPatrocinador, logo_patrocinador, estatus FROM patrocinador";
