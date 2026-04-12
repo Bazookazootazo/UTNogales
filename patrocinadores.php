@@ -293,9 +293,9 @@ html, body {
                         <td><?php echo htmlspecialchars($p['contactoPatrocinador']); ?></td>
                    <td style="text-align: center; display: flex; gap: 8px; justify-content: center;">
                             <a href="#" class="btn-accion btn-actualizar" style="border: 1px solid #ff6b00;" 
-                               onclick="abrirModalEditarPatrocinador(<?php echo htmlspecialchars(json_encode($p)); ?>)">
-                                <i class="fas fa-edit"></i>
-                            </a>
+   onclick='abrirModalEditarPatrocinador(<?php echo json_encode($p); ?>)'>
+    <i class="fas fa-edit"></i>
+</a>
 
                             <?php if($p['estatus'] == 'ACTIVO'): ?>
                                 <a href="#" class="btn-accion btn-desactivar" style="border: 1px solid #666;" 
@@ -408,30 +408,26 @@ html, body {
         </div>
         <div class="modal-body">
             <form id="formEditarPatrocinador" method="POST" action="actions/actualizar_patrocinador.php" enctype="multipart/form-data">
-                <input type="hidden" name="id_patrocinador" id="edit_id_patrocinador">
-                
+<input type="hidden" name="numeroPatrocinador" id="edit_id_patrocinador">                
                 <div class="form-group">
-                    <label class="form-label required">Nombre de la Empresa</label>
-                    <input type="text" name="nombre" id="edit_nombre_patrocinador" class="form-control" required>
-                </div>
+        <label class="form-label required">Nombre de la Empresa</label>
+        <input type="text" name="nombrePatrocinador" id="edit_nombre_patrocinador" class="form-control" required>
+    </div>
 
-                <div class="form-group">
-                    <label class="form-label">Contacto</label>
-                    <input type="text" 
-                           name="telefono" 
-                           id="edit_telefono_patrocinador"
-                           class="form-control" 
-                           placeholder="Ej. 631 7262 232"
-                           pattern="[0-9]{8,15}" 
-                           title="El teléfono debe tener entre 8 y 15 números"
-                           oninput="this.value = this.value.replace(/[^0-9]/g, '');"> 
-                </div>
+    <div class="form-group">
+        <label class="form-label">Contacto (Teléfono)</label>
+        <input type="text" 
+               name="contactoPatrocinador" 
+               id="edit_contacto_patrocinador"
+               class="form-control" 
+               pattern="[0-9]{8,15}" 
+               oninput="this.value = this.value.replace(/[^0-9]/g, '');"> 
+    </div>
 
-                <div class="form-group">
-                    <label class="form-label">Actualizar Logo (Opcional)</label>
-                    <input type="file" name="logo" class="form-control" accept="image/*">
-                    <small style="color: #666;">Deje vacío para mantener el logo actual.</small>
-                </div>
+    <div class="form-group">
+        <label class="form-label">Actualizar Logo</label>
+        <input type="file" name="logo" class="form-control" accept="image/*">
+    </div>
             </form>
         </div>
         <div class="modal-footer">
@@ -467,9 +463,15 @@ function cerrarModal(id) {
     document.body.style.overflow = '';
 }
 
-function abrirModalPatrocinador() { abrirModal('modalPatrocinador'); }
-function abrirModalEditarPatrocinador(patrocinador) {
-    document.getElementById('edit_id_patrocinador').value = patrocinador.numeroPatrocinador;
+function abrirModalPatrocinador() {
+     abrirModal('modalPatrocinador'); 
+}
+function abrirModalEditarPatrocinador(p) {
+    // Asegúrate de usar los nombres EXACTOS de la base de datos
+    document.getElementById('edit_id_patrocinador').value = p.numeroPatrocinador;
+    document.getElementById('edit_nombre_patrocinador').value = p.nombrePatrocinador;
+    document.getElementById('edit_contacto_patrocinador').value = p.contactoPatrocinador;
+
     abrirModal('modalEditarPatrocinador');
 }
 function abrirModalEvento()      { abrirModal('modalEvento'); }
