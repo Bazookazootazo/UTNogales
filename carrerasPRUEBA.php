@@ -417,28 +417,40 @@ try {
                     <div class="form-row-3">
                         <div class="form-group">
                             <label class="form-label required">Kilómetros (Km)</label>
-                            <input type="number" step="0.1" class="form-control" name="km" id="edit_km" required>
+                            <input type="number" step="0.1" class="form-control" name="km" value="0.0" min="0" id="edit_km" required>
                         </div>
                         <div class="form-group">
                             <label class="form-label required">Vueltas</label>
-                            <input type="number" class="form-control" name="vueltas" id="edit_vueltas" required>
+                            <input type="number" class="form-control" name="vueltas" value="1" min="0" id="edit_vueltas" required>
                         </div>
                         <div class="form-group">
                             <label class="form-label required">Cupo Máximo</label>
-                            <input type="number" class="form-control" name="cupo" id="edit_cupo" required>
+                            <input type="number" class="form-control" name="cupo" value="100" min="1" id="edit_cupo" required>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label required">Costo Inscripción ($)</label>
-                            <input type="number" step="0.01" class="form-control" name="costo" id="edit_costo" required>
+                            <input type="number" step="0.01" class="form-control" name="costo" value="0.00" min="0" id="edit_costo" required>
                         </div>
+
+
+                        <!--<div class="form-group">
+                            <label class="form-label">Actualizar Poster (Opcional)</label>
+                            <input type="file" class="form-control" name="imagen" accept=".png, .jpg, .jpeg">
+                        </div>-->
+
                         <div class="form-group">
                             <label class="form-label">Actualizar Poster (Opcional)</label>
                             <input type="file" class="form-control" name="imagen" accept=".png, .jpg, .jpeg">
+                            <div style="margin-top: 10px; text-align: center; background: #f9f9f9; padding: 10px; border-radius: 6px; border: 1px dashed #ccc;">
+                                <span style="font-size: 0.75rem; color: #666; display: block; margin-bottom: 5px;">Póster Actual</span>
+                                <img id="edit_poster_preview" src="" style="height: 100px; width: auto; object-fit: contain; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                            </div>
                         </div>
-                    </div>
+
+                    </div>  
 
                     <div class="form-row">
                         <div class="form-group">
@@ -606,6 +618,7 @@ try {
     <?php endif; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function abrirModal(id) { document.getElementById(id).classList.add('active'); }
         function cerrarModal(id) { document.getElementById(id).classList.remove('active'); }
@@ -618,6 +631,8 @@ try {
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const msg = urlParams.get('msg');
+            const msj = urlParams.get('msj'); // Para atrapar errores
+            const errorText = urlParams.get('error_text'); // Texto del error
 
             if (msg === 'carrera_creada') {
                 Swal.fire({
@@ -640,6 +655,18 @@ try {
                     window.history.replaceState({}, document.title, window.location.pathname);
                 });
             }
+
+            // NUEVA ALERTA: Para bloqueos de seguridad (ej. números negativos)
+            if (msj === 'edit_error') {
+                Swal.fire({
+                    title: 'Acción Rechazada',
+                    text: errorText || 'Ocurrió un error de validación.',
+                    icon: 'error',
+                    confirmButtonColor: '#E8630A'
+                }).then(() => {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                });
+            }
         });
 
         <?php if ($rol === 'ADMIN'): ?>
@@ -655,6 +682,12 @@ try {
             document.getElementById('edit_cupo').value = carrera.cupo;
             document.getElementById('edit_costo').value = carrera.costoInscripcion;
             document.getElementById('edit_descripcion').value = carrera.descripcion;
+
+            // NUEVO: Mostrar el póster actual en la vista previa
+            const posterPreview = document.getElementById('edit_poster_preview');
+            if (posterPreview) {
+                posterPreview.src = 'assets/img/carreras/' + (carrera.rutaImagen || 'default_carrera.png');
+            }
 
             // Llenar Patrocinadores
             const checkboxesPatros = document.querySelectorAll('.edit-sponsor-checkbox');
