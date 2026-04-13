@@ -57,7 +57,7 @@ function confirmarCierreSesion(event) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = '/UTNogales/actions/cerrarSesion.php'; 
+            window.location.href = 'actions/cerrarSesion.php'; 
         }
     });
 }
