@@ -67,10 +67,13 @@ try {
                  INNER JOIN pistas p ON c.numeroPista = p.numeroPista";
 
     if ($rol === 'ADMIN') {
-        $stmt_carreras = $conn->query("$sql_base ORDER BY c.fechaCarrera DESC");
-    } else {
-        $stmt_carreras = $conn->query("$sql_base WHERE c.estatus = 'ACTIVO' AND c.estatusCarrera IN ('PROXIMO', 'ABIERTO') ORDER BY c.fechaCarrera ASC");
-    }
+    $stmt_carreras = $conn->query("$sql_base ORDER BY c.fechaCarrera DESC");
+} else {
+    // Incluimos CERRADO y CONCLUIDO (según tu tabla)
+    $stmt_carreras = $conn->query("$sql_base WHERE c.estatus = 'ACTIVO' 
+        AND c.estatusCarrera IN ('PROXIMO', 'ABIERTO', 'CERRADO', 'CONCLUIDO') 
+        ORDER BY c.fechaCarrera DESC");
+}
     
     $carreras = $stmt_carreras->fetchAll(PDO::FETCH_ASSOC);
     $categorias_json = json_encode($categorias, JSON_UNESCAPED_UNICODE);
@@ -207,10 +210,12 @@ try {
             </section>
             <?php endif; ?>
 
-            <?php if ($rol === 'CICLISTA'): ?>
-            <h2 style="font-family: var(--font-display); color: var(--mtb-dark);">Próximos Desafíos:</h2>
-            <div class="grid-cliente">
-                <?php foreach ($carreras as $c): ?>
+<?php if ($rol === 'CICLISTA'): ?>
+    
+    <h2 style="font-family: var(--font-display); color: var(--mtb-dark);">Próximos Desafíos:</h2>
+    <div class="grid-cliente">
+        <?php foreach ($carreras as $c): ?>
+            <?php if ($c['estatusCarrera'] === 'ABIERTO' || $c['estatusCarrera'] === 'PROXIMO'): ?>
                 <div class="card-carrera">
                     <img src="assets/img/carreras/<?= $c['rutaImagen'] ?>" class="carrera-img" onerror="this.src='assets/img/carreras/default_carrera.png'">
                     <div class="carrera-body">
@@ -231,27 +236,67 @@ try {
                             <?php if($c['estatusCarrera'] === 'ABIERTO'): ?>
                                 <button class="btn btn-primary btn-sm" onclick="abrirModalDetallesCarrera(<?= htmlspecialchars(json_encode($c), ENT_QUOTES, 'UTF-8') ?>)">Ver Detalles</button>
                             <?php else: ?>
-                                <span class="badge badge-primary">PRÓXIMAMENTE</span>
+                                <span class="badge" style="background: #17a2b8; color: white; padding: 5px 10px; border-radius: 4px;">PRÓXIMAMENTE</span>
                             <?php endif; ?>
-
                         </div>
 
                         <?php if(!empty($c['logos_patrocinadores'])): ?>
-                        <div class="carrera-sponsors" style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #eee;">
-                            <span style="font-size: 0.7rem; color: #999; display: block; margin-bottom: 5px;">PATROCINADO POR:</span>
-                            <?php 
-                                $logos = explode(',', $c['logos_patrocinadores']);
-                                foreach($logos as $logo) { echo "<img src='assets/img/patrocinadores/".trim($logo)."'>"; }
-                            ?>
-                        </div>
+                            <div class="carrera-sponsors" style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #eee;">
+                                <span style="font-size: 0.7rem; color: #999; display: block; margin-bottom: 5px;">PATROCINADO POR:</span>
+                                <?php 
+                                    $logos = explode(',', $c['logos_patrocinadores']);
+                                    foreach($logos as $logo) { echo "<img src='assets/img/patrocinadores/".trim($logo)."'>"; }
+                                ?>
+                            </div>
                         <?php endif; ?>
                     </div>
                 </div>
-                <?php endforeach; ?>
-            </div>
             <?php endif; ?>
-        </main>
+        <?php endforeach; ?>
     </div>
+
+    <h2 style="font-family: var(--font-display); color: var(--mtb-dark); margin-top: 40px;">Carreras realizadas:</h2>
+    <div class="grid-cliente">
+        <?php foreach ($carreras as $c): ?>
+            <?php if ($c['estatusCarrera'] === 'CONCLUIDO' || $c['estatusCarrera'] === 'CERRADO'): ?>
+                <div class="card-carrera" style="opacity: 0.85;"> <img src="assets/img/carreras/<?= $c['rutaImagen'] ?>" class="carrera-img" style="filter: grayscale(30%);">
+                    <div class="carrera-body">
+                        <div class="carrera-fecha"><i class="far fa-calendar-alt"></i> <?= date('d M, Y', strtotime($c['fechaCarrera'])) ?></div>
+                        <h3 class="carrera-title"><?= htmlspecialchars($c['nombreCarrera']) ?></h3>
+                        
+                        <div class="carrera-info">
+                            <span><i class="fas fa-map-marker-alt"></i> <?= htmlspecialchars($c['nombrePista']) ?></span>
+                            <span><i class="fas fa-route"></i> <?= $c['kilometros'] ?> km</span>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 15px; margin-top: 10px;">
+                            <div>
+                                <span style="display:block; font-size:0.7rem; color:#888;">EVENTO</span>
+                                <strong style="color: #666;">FINALIZADO</strong>
+                            </div>
+                            
+                            <?php if($c['estatusCarrera'] === 'CONCLUIDO'): ?>
+                                <span class="badge" style="background: #6c757d; color: white; padding: 5px 10px; border-radius: 4px;">CONCLUIDA</span>
+                            <?php else: ?>
+                                <span class="badge" style="background: #dc3545; color: white; padding: 5px 10px; border-radius: 4px;">CERRADA</span>
+                            <?php endif; ?>
+                        </div>
+
+                        <?php if(!empty($c['logos_patrocinadores'])): ?>
+                            <div class="carrera-sponsors" style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #eee;">
+                                <?php 
+                                    $logos = explode(',', $c['logos_patrocinadores']);
+                                    foreach($logos as $logo) { echo "<img src='assets/img/patrocinadores/".trim($logo)."' style='filter: grayscale(100%); opacity: 0.6;'>"; }
+                                ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </div>
+
+<?php endif; ?>
 
     <?php if ($rol === 'ADMIN'): ?>
     <div class="modal-overlay" id="modalCarrera">
