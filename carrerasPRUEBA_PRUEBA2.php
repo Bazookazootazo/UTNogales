@@ -28,30 +28,41 @@ try {
 } catch (PDOException $e) {
     die("Error al obtener datos: " . $e->getMessage());
 }
-
 $id_check = $_SESSION['id_usuario'];
-$stmt_check = $conn->prepare("SELECT estatus FROM usuarios WHERE numeroUser = ?");
-$stmt_check->execute([$id_check]);
-$user_status = $stmt_check->fetch(PDO::FETCH_ASSOC);
+    
+    $stmt_check = $conn->prepare("SELECT estatus FROM usuarios WHERE numeroUser = ?");
+    $stmt_check->execute([$id_check]);
+    $user_status = $stmt_check->fetch(PDO::FETCH_ASSOC);
 
-if (!$user_status || strtoupper($user_status['estatus']) === 'Inactivo') {
-    session_unset();
-    session_destroy();
-    header("Location: index.php?error=" . urlencode("Tu sesión ha expirado o tu cuenta ha sido desactivada."));
-    exit();
-}
+    if (!$user_status || strtoupper($user_status['estatus']) === 'Inactivo') {
+        session_unset();
+        session_destroy();
+        header("Location: index.php?error=" . urlencode("Tu sesión ha expirado o tu cuenta ha sido desactivada."));
+        exit();
+    }
 
 // ==========================================
-// CONSULTAS BASE (Catálogos)
+// CONSULTAS BASE (Catálogos para formularios)
 // ==========================================
 $pistas = $conn->query("SELECT numeroPista, nombrePista FROM pistas WHERE estatus = 'ACTIVO'")->fetchAll(PDO::FETCH_ASSOC);
 $patrocinadores = $conn->query("SELECT numeroPatrocinador, nombrePatrocinador, logo_patrocinador FROM patrocinador WHERE estatus = 'ACTIVO'")->fetchAll(PDO::FETCH_ASSOC);
 $categorias = $conn->query("SELECT * FROM categorias ORDER BY edadMinima ASC")->fetchAll(PDO::FETCH_ASSOC);
 
 // ==========================================
-// CONSULTA DE CARRERAS (Con patrocinadores y categorías)
+// CONSULTA DE CARRERAS (Con sus patrocinadores)
 // ==========================================
 try {
+    $sql_base = "SELECT c.*, p.nombrePista, 
+                 (SELECT GROUP_CONCAT(pat.logo_patrocinador SEPARATOR ',') 
+                  FROM carreras_patrocinadores cp 
+                  INNER JOIN patrocinador pat ON cp.numeroPatrocinador = pat.numeroPatrocinador 
+                  WHERE cp.numeroCarrera = c.numeroCarrera) as logos_patrocinadores,
+                 (SELECT GROUP_CONCAT(numeroPatrocinador) 
+                  FROM carreras_patrocinadores 
+                  WHERE numeroCarrera = c.numeroCarrera) as patrocinadores_ids
+                 FROM carreras c 
+                 INNER JOIN pistas p ON c.numeroPista = p.numeroPista";
+
     $sql_base = "SELECT c.*, p.nombrePista, 
                  (SELECT GROUP_CONCAT(pat.logo_patrocinador SEPARATOR ',') 
                   FROM carreras_patrocinadores cp 
@@ -73,8 +84,11 @@ try {
     }
     
     $carreras = $stmt_carreras->fetchAll(PDO::FETCH_ASSOC);
+    
+    // TRUCO: Pasamos el catálogo completo de categorías a JSON para usarlo en el modal del ciclista
     $categorias_json = json_encode($categorias, JSON_UNESCAPED_UNICODE);
 
+    // Contadores para stats
     $total_carreras = count($carreras);
     $abiertas = 0;
     foreach($carreras as $c) if($c['estatusCarrera'] === 'ABIERTO') $abiertas++;
@@ -162,10 +176,12 @@ try {
                             <tbody>
                                 <?php foreach ($carreras as $c): ?>
                                 <tr style="<?= $c['estatus'] == 'INACTIVO' ? 'opacity: 0.6; background: #fdfdfd;' : '' ?>">
+                                    
                                     <td style="color: #555;">
                                         <div style="font-weight: 700;"><i class="far fa-calendar-alt text-primary"></i> <?= date('d/m/Y', strtotime($c['fechaCarrera'])) ?></div>
                                         <div style="font-size: 0.8rem; margin-top: 3px;"><i class="far fa-clock text-primary"></i> <?= date('h:i A', strtotime($c['horaSalida'])) ?></div>
                                     </td>
+
                                     <td>
                                         <div style="font-weight: 800; color: var(--mtb-dark); font-size: 1.05rem;"><?= htmlspecialchars($c['nombreCarrera']) ?></div>
                                         <div style="font-size: 0.8rem; color: #666; margin-top: 4px; display: flex; gap: 12px;">
@@ -173,13 +189,16 @@ try {
                                             <span><i class="fas fa-sync-alt text-primary"></i> <?= $c['vueltas'] ?> Vueltas</span>
                                         </div>
                                     </td>
+
                                     <td><span class="badge badge-dark"><i class="fas fa-map-marker-alt"></i> <?= htmlspecialchars($c['nombrePista']) ?></span></td>
+
                                     <td style="text-align: center;">
                                         <div style="font-weight: 800; font-size: 1.1rem; color: <?= $c['costoInscripcion'] > 0 ? 'var(--mtb-dark)' : 'var(--mtb-success)' ?>;">
                                             <?= $c['costoInscripcion'] > 0 ? '$'.number_format($c['costoInscripcion'], 2) : 'GRATIS' ?>
                                         </div>
                                         <div style="font-size: 0.75rem; color: #666; margin-top: 2px;"><i class="fas fa-users"></i> Max. <?= $c['cupo'] ?></div>
                                     </td>
+
                                     <td style="text-align: center;">
                                         <?php 
                                             $colores = ['PROXIMO'=>'primary', 'ABIERTO'=>'success', 'CERRADO'=>'warning', 'CONCLUIDO'=>'dark'];
@@ -187,11 +206,13 @@ try {
                                         ?>
                                         <span class="badge badge-<?= $color ?>"><?= $c['estatusCarrera'] ?></span>
                                     </td>
+
                                     <td style="text-align: center; display: flex; gap: 8px; justify-content: center; align-items: center; height: 100%;">
                                         <a href="#" class="btn-accion btn-actualizar" style="border: 1px solid #ff6b00;" 
                                            onclick="abrirModalEditarCarrera(<?= htmlspecialchars(json_encode($c), ENT_QUOTES, 'UTF-8') ?>)">
                                             <i class="fas fa-edit"></i>
                                         </a>
+                                        
                                         <?php if($c['estatus'] == 'ACTIVO'): ?>
                                             <a href="actions/estatus_carrera.php?id=<?= $c['numeroCarrera'] ?>&estado=INACTIVO" class="btn-accion btn-desactivar" title="Ocultar del sistema"><i class="fas fa-eye-slash"></i></a>
                                         <?php else: ?>
@@ -329,7 +350,7 @@ try {
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Patrocinadores</label>
+                            <label class="form-label">Patrocinadores de esta Carrera</label>
                             <div class="chk-grid">
                                 <?php foreach($patrocinadores as $pat): ?>
                                 <label class="chk-item">
@@ -342,21 +363,21 @@ try {
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label required">Categorías Participantes</label>
-                            <div class="chk-grid">
-                                <?php foreach($categorias as $cat): ?>
-                                <label class="chk-item">
-                                    <input type="checkbox" name="categorias[]" value="<?= $cat['numeroCategoria'] ?>"> 
-                                    <?= htmlspecialchars($cat['tipoCategoria']) ?> (<?= $cat['generoCategoria'] ?>)
-                                </label>
-                                <?php endforeach; ?>
-                            </div>
+    <label class="form-label required">Categorías Participantes</label>
+    <div class="chk-grid">
+        <?php foreach($categorias as $cat): ?>
+        <label class="chk-item">
+            <input type="checkbox" name="categorias[]" value="<?= $cat['numeroCategoria'] ?>" class="edit-category-checkbox"> 
+            <?= htmlspecialchars($cat['tipoCategoria']) ?> (<?= $cat['generoCategoria'] ?>)
+        </label>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+                        <div class="form-group">
+                            <label class="form-label">Descripción o Reglas</label>
+                            <textarea class="form-control" name="descripcion" rows="4"></textarea>
                         </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Descripción o Reglas</label>
-                        <textarea class="form-control" name="descripcion" rows="4"></textarea>
                     </div>
 
                     <div class="modal-footer">
@@ -453,23 +474,10 @@ try {
                                 <?php endforeach; ?>
                             </div>
                         </div>
-
                         <div class="form-group">
-                            <label class="form-label required">Categorías Participantes</label>
-                            <div class="chk-grid">
-                                <?php foreach($categorias as $cat): ?>
-                                <label class="chk-item">
-                                    <input type="checkbox" name="categorias[]" value="<?= $cat['numeroCategoria'] ?>" class="edit-category-checkbox"> 
-                                    <?= htmlspecialchars($cat['tipoCategoria']) ?> (<?= $cat['generoCategoria'] ?>)
-                                </label>
-                                <?php endforeach; ?>
-                            </div>
+                            <label class="form-label">Descripción o Reglas</label>
+                            <textarea class="form-control" name="descripcion" id="edit_descripcion" rows="4"></textarea>
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Descripción o Reglas</label>
-                        <textarea class="form-control" name="descripcion" id="edit_descripcion" rows="4"></textarea>
                     </div>
 
                     <div class="modal-footer">
@@ -540,6 +548,7 @@ try {
     </div>
     <?php endif; ?>
 
+
     <?php if ($rol === 'CICLISTA'): ?>
     <div class="modal-overlay" id="modalDetallesCarrera">
         <div class="modal modal-lg" style="overflow: hidden; padding: 0;">
@@ -551,7 +560,7 @@ try {
                     <div style="padding: 20px;">
                         <h4 style="margin: 0 0 10px 0; color: var(--mtb-gray-600); font-size: 0.85rem; text-transform: uppercase;">Patrocinadores Oficiales</h4>
                         <div id="detalle_patrocinadores" style="display: flex; flex-wrap: wrap; gap: 10px;">
-                        </div>
+                            </div>
                     </div>
                 </div>
 
@@ -591,7 +600,7 @@ try {
                     <div style="margin-bottom: auto;">
                         <h4 style="margin: 0 0 8px 0; color: var(--mtb-dark); font-size: 1rem;">Categorías Disponibles</h4>
                         <div id="detalle_categorias" style="display: flex; flex-wrap: wrap; gap: 8px;">
-                        </div>
+                            </div>
                     </div>
 
                     <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--mtb-gray-200); text-align: right;">
@@ -605,41 +614,15 @@ try {
     </div>
     <?php endif; ?>
 
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function abrirModal(id) { document.getElementById(id).classList.add('active'); }
         function cerrarModal(id) { document.getElementById(id).classList.remove('active'); }
         
+        // Manejo de sidebar móvil
         document.getElementById('toggleSidebar').addEventListener('click', function() {
             document.getElementById('mtbSidebar').classList.toggle('open');
-        });
-
-        // MANEJO DE ALERTAS POR URL (ESTILO CLÁSICO PISTAS)
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const msg = urlParams.get('msg');
-
-            if (msg === 'carrera_creada') {
-                Swal.fire({
-                    title: '¡Carrera Creada!',
-                    text: 'El evento se registró correctamente.',
-                    icon: 'success',
-                    confirmButtonColor: '#E8630A'
-                }).then(() => {
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                });
-            }
-
-            if (msg === 'actualizado_ok') {
-                Swal.fire({
-                    title: '¡Actualizado!',
-                    text: 'Los cambios se han guardado correctamente.',
-                    icon: 'success',
-                    confirmButtonColor: '#E8630A'
-                }).then(() => {
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                });
-            }
         });
 
         <?php if ($rol === 'ADMIN'): ?>
@@ -656,30 +639,31 @@ try {
             document.getElementById('edit_costo').value = carrera.costoInscripcion;
             document.getElementById('edit_descripcion').value = carrera.descripcion;
 
-            // Llenar Patrocinadores
-            const checkboxesPatros = document.querySelectorAll('.edit-sponsor-checkbox');
-            checkboxesPatros.forEach(chk => chk.checked = false);
+            const checkboxes = document.querySelectorAll('.edit-sponsor-checkbox');
+            checkboxes.forEach(chk => chk.checked = false);
+
             if(carrera.patrocinadores_ids) {
-                const idsP = carrera.patrocinadores_ids.split(',');
-                idsP.forEach(id => {
+                const ids = carrera.patrocinadores_ids.split(',');
+                ids.forEach(id => {
                     const chk = document.querySelector(`.edit-sponsor-checkbox[value="${id}"]`);
                     if(chk) chk.checked = true;
                 });
             }
-
-            // Llenar Categorías
-            const checkCats = document.querySelectorAll('.edit-category-checkbox');
-            checkCats.forEach(chk => chk.checked = false);
-            if(carrera.categorias_ids) {
-                const idsCat = carrera.categorias_ids.split(',');
-                idsCat.forEach(id => {
-                    const chk = document.querySelector(`.edit-category-checkbox[value="${id}"]`);
-                    if(chk) chk.checked = true;
-                });
-            }
-
             abrirModal('modalEditarCarrera');
         }
+
+        // 4. Manejar Categorías: Desmarcar todas primero
+    const checkCats = document.querySelectorAll('.edit-category-checkbox');
+    checkCats.forEach(chk => chk.checked = false);
+
+    // Marcar las asignadas
+    if(carrera.categorias_ids) {
+        const idsCat = carrera.categorias_ids.split(',');
+        idsCat.forEach(id => {
+            const chk = document.querySelector(`.edit-category-checkbox[value="${id}"]`);
+            if(chk) chk.checked = true;
+        });
+    }
         <?php endif; ?>
 
         <?php if ($rol === 'CICLISTA'): ?>
@@ -698,9 +682,9 @@ try {
 
             const costo = parseFloat(carrera.costoInscripcion);
             document.getElementById('detalle_costo').textContent = costo > 0 ? `$${costo.toFixed(2)}` : 'GRATUITA';
+
             document.getElementById('detalle_imagen').src = 'assets/img/carreras/' + (carrera.rutaImagen || 'default_carrera.png');
 
-            // Patrocinadores
             const contenedorPatro = document.getElementById('detalle_patrocinadores');
             contenedorPatro.innerHTML = '';
             if (carrera.logos_patrocinadores) {
@@ -712,22 +696,35 @@ try {
                 contenedorPatro.innerHTML = '<span style="font-size: 0.8rem; color: #999;">Sin patrocinadores asignados.</span>';
             }
 
-            // Categorías Filtradas
             const contenedorCat = document.getElementById('detalle_categorias');
             contenedorCat.innerHTML = '';
-            if (carrera.categorias_ids && catalogoCategorias.length > 0) {
-                const idsAsignadas = carrera.categorias_ids.split(',');
+            if (catalogoCategorias.length > 0) {
                 catalogoCategorias.forEach(cat => {
-                    if(idsAsignadas.includes(cat.numeroCategoria.toString())) {
-                        contenedorCat.innerHTML += `<span class="badge badge-dark" style="background: #e9ecef; color: #495057; border: 1px solid #ced4da; padding: 6px 12px; font-weight: normal;">${cat.tipoCategoria} (${cat.edadMinima}-${cat.edadMaxima} años)</span>`;
-                    }
+                    contenedorCat.innerHTML += `<span class="badge badge-dark" style="background: #e9ecef; color: #495057; border: 1px solid #ced4da; padding: 6px 12px; font-weight: normal;">${cat.tipoCategoria} (${cat.edadMinima}-${cat.edadMaxima} años)</span>`;
                 });
             } else {
-                contenedorCat.innerHTML = '<span style="font-size: 0.8rem; color: #999;">Aún no se han asignado categorías a este evento.</span>';
+                contenedorCat.innerHTML = '<span style="font-size: 0.8rem; color: #999;">Aún no hay categorías definidas en el sistema.</span>';
             }
 
             abrirModal('modalDetallesCarrera');
         }
+
+        // 6. Categorías filtradas para ESTA carrera
+    const contenedorCat = document.getElementById('detalle_categorias');
+    contenedorCat.innerHTML = '';
+    
+    if (carrera.categorias_ids && catalogoCategorias.length > 0) {
+        const idsAsignadas = carrera.categorias_ids.split(',');
+        
+        catalogoCategorias.forEach(cat => {
+            // Solo dibujamos la categoría si su ID está en la lista de asignadas
+            if(idsAsignadas.includes(cat.numeroCategoria.toString())) {
+                contenedorCat.innerHTML += `<span class="badge badge-dark" style="background: #e9ecef; color: #495057; border: 1px solid #ced4da; padding: 6px 12px; font-weight: normal;">${cat.tipoCategoria} (${cat.edadMinima}-${cat.edadMaxima} años)</span>`;
+            }
+        });
+    } else {
+        contenedorCat.innerHTML = '<span style="font-size: 0.8rem; color: #999;">Aún no se han asignado categorías a este evento.</span>';
+    }
         <?php endif; ?>
     </script>
 </body>

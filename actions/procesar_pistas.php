@@ -1,5 +1,5 @@
 <?php
-session_start();
+session_start(); 
 // Como este archivo está dentro de 'actions', subimos un nivel para llegar a 'config'
 include '../config/conexion.php'; 
 

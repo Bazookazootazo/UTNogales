@@ -2,30 +2,38 @@
 session_start();
 require_once "../config/conexion.php"; 
 
-// Solo el ADMIN puede eliminar
-if (isset($_GET['id']) && isset($_SESSION['rol']) && $_SESSION['rol'] === 'ADMIN') {
+// Protección: Solo el ADMIN puede eliminar
+if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'ADMIN') {
+    header("Location: ../carrerasPRUEBA.php");
+    exit();
+}
+
+if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
     try {
+        // Intentamos eliminar la categoría
         $stmt = $conn->prepare("DELETE FROM categorias WHERE numeroCategoria = ?");
         $stmt->execute([$id]);
         
-        header("Location: ../carrerasPRUEBAS.php?msg=categoria_eliminada");
+        // Si tiene éxito, redirigimos con la bandera de "categoria_eliminada"
+        header("Location: ../carrerasPRUEBA.php?msg=categoria_eliminada");
         exit();
 
     } catch (PDOException $e) {
-        // El código 23000 significa que hay una restricción de llave foránea.
-        // Es decir, alguien ya está inscrito usando esta categoría.
+        // El código 23000 es una restricción de llave foránea de MySQL
+        // Significa que la categoría ya está en uso en otra tabla y no se puede borrar
         if ($e->getCode() == 23000) {
             echo "<script>
-                    alert('No se puede eliminar esta categoría porque ya hay ciclistas o inscripciones usándola.');
+                    alert('Acción denegada: No puedes eliminar esta categoría porque ya está asignada a una carrera o tiene ciclistas inscritos.');
                     window.location.href = '../carrerasPRUEBA.php';
                   </script>";
         } else {
-            die("Error al eliminar: " . $e->getMessage());
+            die("Error interno al eliminar: " . $e->getMessage());
         }
     }
 } else {
+    // Si entran al archivo sin un ID, los regresamos
     header("Location: ../carrerasPRUEBA.php");
     exit();
 }
