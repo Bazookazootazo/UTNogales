@@ -37,7 +37,7 @@ if (isset($_POST['submit'])) {
             if ($estado_sp === 'EXITO') {
                 $_SESSION['id_usuario'] = $res['id'];
                 $_SESSION['rol'] = $res['rol'];
-                header("Location: ../inicio.php?msg=ok");
+                header("Location: ../inscripciones.php?msg=ok");
                 exit();
             }
 

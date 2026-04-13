@@ -259,11 +259,11 @@ document.getElementById('formRegistro').addEventListener('submit', function(e) {
                 background: '#1A1F2E',
                 color: '#fff'
             }).then(() => {
-                window.location.href = 'inicio.php';
+                window.location.href = 'inscripciones.php';
             });
             
             setTimeout(() => {
-                window.location.href = 'inicio.php';
+                window.location.href = 'inscripciones.php';
             }, 2000);
             
         } else {

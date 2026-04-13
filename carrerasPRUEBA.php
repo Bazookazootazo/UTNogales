@@ -208,7 +208,7 @@ try {
             <?php endif; ?>
 
             <?php if ($rol === 'CICLISTA'): ?>
-            <h2 style="font-family: var(--font-display); color: var(--mtb-dark);">Próximos Desafíos</h2>
+            <h2 style="font-family: var(--font-display); color: var(--mtb-dark);">Próximos Desafíos:</h2>
             <div class="grid-cliente">
                 <?php foreach ($carreras as $c): ?>
                 <div class="card-carrera">

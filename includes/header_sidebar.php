@@ -21,18 +21,8 @@
                 <span class="brand-sub">Mountain Bike System</span>
             </div>
         </div>
-
-        <nav class="sidebar-nav">
-            <span class="nav-section-label">Principal</span>
-            <div class="nav-item">
-                <a href="inicio.php" class="nav-link <?php echo ($pagina_actual == 'inicio') ? 'active' : ''; ?>">
-                    <span class="nav-icon"><i class="fas fa-th-large"></i></span>
-                    <span class="nav-label">Dashboard</span>
-                </a>
-            </div>
-
             <div class="nav-divider"></div>
-            <span class="nav-section-label">Gestión</span>
+            <span class="nav-section-label">Inicio</span>
             <div class="nav-item">
                 <a href="inscripciones.php" class="nav-link <?php echo ($pagina_actual == 'inscripciones') ? 'active' : ''; ?>">
                     <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
@@ -41,12 +31,12 @@
 
                 <a href="carrerasPRUEBA.php" class="nav-link <?php echo ($pagina_actual == 'carreras') ? 'active' : ''; ?>">
                     <span class="nav-icon"><i class="fas fa-flag-checkered"></i></span>
-                    <span class="nav-label">Carreras PRUEBA</span>
+                    <span class="nav-label">Carreras </span>
                 </a>
 
                 <a href="pistasPRUEBA.php" class="nav-link <?php echo ($pagina_actual == 'pistas') ? 'active' : ''; ?>">
                     <span class="nav-icon"><i class="fas fa-route"></i></span>
-                    <span class="nav-label">Pistas PRUEBA</span>
+                    <span class="nav-label">Pistas </span>
                 </a>
 
                 <a href="patrocinadores.php" class="nav-link <?php echo ($pagina_actual == 'patrocinadores') ? 'active' : ''; ?>">
