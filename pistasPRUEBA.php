@@ -291,10 +291,16 @@ try {
                             <option value="Cerrada">Cerrada</option>
                         </select>
                     </div>
+
                     <div class="form-group">
-                        <label class="form-label">Actualizar Imagen (Opcional)</label>
+                        <label class="form-label">Actualizar Poster (Opcional)</label>
                         <input type="file" class="form-control" name="imagen_archivo" accept=".png, .jpg, .jpeg, image/png, image/jpeg">
+                        <div style="margin-top: 10px; text-align: center; background: #f9f9f9; padding: 10px; border-radius: 6px; border: 1px dashed #ccc;">
+                            <span style="font-size: 0.75rem; color: #666; display: block; margin-bottom: 5px;">Póster Actual</span>
+                            <img id="edit_poster_preview" src="" style="height: 100px; width: auto; object-fit: contain; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                        </div>
                     </div>
+
                 </form>
             </div>
             <div class="modal-footer">
@@ -317,7 +323,19 @@ try {
         document.getElementById('edit_nombrePista').value = pista.nombrePista;
         document.getElementById('edit_seccion').value = pista.seccion;
         document.getElementById('edit_estadoPista').value = pista.estadoPista;
+        
+        const posterPreview = document.getElementById('edit_poster_preview');
+        if (posterPreview) {
+            posterPreview.src = 'assets/img/pistas/' + (pista.rutaImagen || 'default_pista.png');
+        }
+
         abrirModal('modalEditarPista');
+    }
+
+    // Cargar la imagen actual en la vista previa
+    const posterPreview = document.getElementById('edit_poster_preview');
+    if (posterPreview) {
+        posterPreview.src = 'assets/img/pistas/' + (pista.rutaImagen || 'default_pista.png');
     }
 
     // Petición AJAX para guardar pista

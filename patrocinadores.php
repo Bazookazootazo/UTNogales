@@ -436,9 +436,14 @@ html, body {
     </div>
 
     <div class="form-group">
-        <label class="form-label">Actualizar Logo</label>
-        <input type="file" name="logo" class="form-control" accept="image/*">
+        <label class="form-label">Actualizar Logo (Opcional)</label>
+        <input type="file" class="form-control" name="logo" accept=".png, .jpg, .jpeg, image/png, image/jpeg">
+        <div style="margin-top: 10px; text-align: center; background: #f9f9f9; padding: 10px; border-radius: 6px; border: 1px dashed #ccc;">
+            <span style="font-size: 0.75rem; color: #666; display: block; margin-bottom: 5px;">Logo Actual</span>
+            <img id="edit_poster_preview" src="" style="height: 100px; width: auto; object-fit: contain; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        </div>
     </div>
+
             </form>
         </div>
         <div class="modal-footer">
@@ -483,8 +488,14 @@ function abrirModalEditarPatrocinador(p) {
     document.getElementById('edit_nombre_patrocinador').value = p.nombrePatrocinador;
     document.getElementById('edit_contacto_patrocinador').value = p.contactoPatrocinador;
 
+    const posterPreview = document.getElementById('edit_poster_preview');
+    if (posterPreview) {
+        posterPreview.src = 'assets/img/patrocinadores/' + (p.logo_patrocinador || 'default_patrocinador.png');
+    }
+
     abrirModal('modalEditarPatrocinador');
 }
+
 function abrirModalEvento()      { abrirModal('modalEvento'); }
 
 // Cerrar modal al hacer clic en el overlay
