@@ -237,12 +237,13 @@ function cerrarModal(id) {
 }
 
 function abrirModalEditarAdmin(usuario) {
-    // Asegúrate de que los nombres coincidan con los IDs de los inputs
-    document.getElementsByName('nuevo_nombre')[0].value = usuario.nombreUser;
-    document.getElementsByName('nuevo_apellido')[0].value = usuario.apellidosUser;
-    document.getElementsByName('nuevo_correo')[0].value = usuario.correoUser;
-    document.getElementsByName('nuevo_telefono')[0].value = usuario.telefonoUser;
+    // 1. Llenamos los campos buscando por el atributo 'name'
+    document.getElementsByName('nuevo_nombre')[0].value = usuario.nombreUser || '';
+    document.getElementsByName('nuevo_apellido')[0].value = usuario.apellidosUser || '';
+    document.getElementsByName('nuevo_correo')[0].value = usuario.correoUser || '';
+    document.getElementsByName('nuevo_telefono')[0].value = usuario.telefonoUser || '';
     
+    // 2. ESTA LÍNEA ES VITAL: Le pasa el ID al PHP para que no use el de tu sesión
     document.getElementById('edit_id_user').value = usuario.numeroUser;
     
     abrirModal('modalEditarUsuarios'); 
