@@ -281,6 +281,7 @@ html, body {
                         <th>Logo</th>
                         <th>Empresa / Patrocinador</th>
                         <th>Contacto Principal</th>
+                        <th>Estatus</th>
                         <th style="text-align: center;">Acciones</th>
                     </tr>
                 </thead>
@@ -293,26 +294,33 @@ html, body {
                                  style="height: 40px; width: 60px; object-fit: contain; background: #f9f9f9; border-radius: 4px; padding: 2px;">
                         </td>
                         <td style="font-weight: 600;"><?php echo htmlspecialchars($p['nombrePatrocinador']); ?></td>
+                        
                         <td><?php echo htmlspecialchars($p['contactoPatrocinador']); ?></td>
+                                <td>
+                                    <span class="<?php echo (strtoupper($p['estatus']) == 'ACTIVO') ? 'estatus-activo' : 'estatus-inactivo'; ?>">
+                                        <i class="fas fa-circle" style="font-size: 0.6rem; margin-right: 5px;"></i>
+                                        <?php echo $p['estatus']; ?>
+                                    </span>
+                                </td>
                    <td style="text-align: center; display: flex; gap: 8px; justify-content: center;">
                             <a href="#" class="btn-accion btn-actualizar" style="border: 1px solid #ff6b00;" 
    onclick='abrirModalEditarPatrocinador(<?php echo json_encode($p); ?>)'>
     <i class="fas fa-edit"></i>
 </a>
 
-                            <?php if($p['estatus'] == 'ACTIVO'): ?>
-                                <a href="#" class="btn-accion btn-desactivar" style="border: 1px solid #666;" 
-                                   title="Suspender patrocinio"
-                                   onclick="cambiarEstatusPatrocinador(<?php echo $p['numeroPatrocinador']; ?>, 'Inactivo')">
-                                    <i class="fas fa-ban"></i>
-                                </a>
-                            <?php else: ?>
-                                <a href="#" class="btn-accion btn-reactivar" style="border: 1px solid #28a745;" 
-                                   title="Reactivar patrocinio"
-                                   onclick="cambiarEstatusPatrocinador(<?php echo $p['numeroPatrocinador']; ?>, 'Activo')">
-                                    <i class="fas fa-check-circle"></i>
-                                </a>
-                            <?php endif; ?>
+                            <?php if(strtoupper($p['estatus']) == 'ACTIVO'): ?>
+        <a href="#" class="btn-accion btn-desactivar" style="border: 1px solid #666;" 
+           title="Suspender patrocinio"
+           onclick="cambiarEstatusPatrocinador(<?php echo $p['numeroPatrocinador']; ?>, 'INACTIVO')">
+            <i class="fas fa-ban"></i>
+        </a>
+    <?php else: ?>
+        <a href="#" class="btn-accion btn-reactivar" style="border: 1px solid #28a745;" 
+           title="Reactivar patrocinio"
+           onclick="cambiarEstatusPatrocinador(<?php echo $p['numeroPatrocinador']; ?>, 'ACTIVO')">
+            <i class="fas fa-check-circle"></i>
+        </a>
+    <?php endif; ?>
 
                             <a href="#" class="btn-accion btn-delete" 
                                onclick="eliminarPatrocinador(<?php echo $p['numeroPatrocinador']; ?>)">
@@ -612,6 +620,69 @@ function confirmarCierreSesion(event) {
 }
 </script>
 <script>
+    // Función para ELIMINAR definitivamente
+function eliminarPatrocinador(id) {
+    Swal.fire({
+        title: '¿Eliminar patrocinador?',
+        text: "Esta acción no se puede deshacer y se borrará de la base de datos.",
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#666',
+        confirmButtonText: 'Sí, eliminar permanentemente'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('actions/eliminar_patrocinador.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${id}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire('Eliminado', data.message, 'success').then(() => location.reload());
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            });
+        }
+    });
+}
+
+// Función para REACTIVAR o DAR DE BAJA (Usa la que ya te di, pero asegúrate de que sea así)
+function cambiarEstatusPatrocinador(id, nuevoEstatus) {
+    const accion = nuevoEstatus === 'Inactivo' ? 'dar de baja' : 'reactivar';
+    
+    Swal.fire({
+        title: `¿Estás seguro?`,
+        text: `Vas a ${accion} este patrocinador.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ff6b00',
+        cancelButtonColor: '#666',
+        confirmButtonText: 'Sí, confirmar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Enviamos los datos al servidor
+            fetch('actions/cambiar_estatus_patrocinador.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${id}&estatus=${nuevoEstatus}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire('¡Listo!', data.message, 'success').then(() => {
+                        location.reload(); // Recargamos para ver el cambio de icono
+                    });
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            });
+        }
+    });
+}
 function checarEstatusVivo() {
     fetch('verificar_estatus.php')
         .then(response => response.json())
