@@ -348,27 +348,27 @@ try {
                     <div class="form-row-3">
                         <div class="form-group">
                             <label class="form-label required">Kilómetros (Km)</label>
-                            <input type="number" step="0.1" class="form-control" name="km" value="0.0" required>
+                            <input type="number" step="0.1" class="form-control" name="km" value="0.0" min="0" required>
                         </div>
                         <div class="form-group">
                             <label class="form-label required">Vueltas</label>
-                            <input type="number" class="form-control" name="vueltas" value="1" required>
+                            <input type="number" class="form-control" name="vueltas" value="1" min="1" required>
                         </div>
                         <div class="form-group">
                             <label class="form-label required">Cupo Máximo</label>
-                            <input type="number" class="form-control" name="cupo" value="100" required>
+                            <input type="number" class="form-control" name="cupo" value="100" min="0" required>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label required">Costo Inscripción ($)</label>
-                            <input type="number" step="0.01" class="form-control" name="costo" value="0.00" required>
+                            <input type="number" step="0.01" class="form-control" name="costo" value="0.00" min="0" required>
                             <small class="form-hint">Pon 0 para evento gratuito.</small>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Poster / Imagen promocional</label>
-                            <input type="file" class="form-control" name="imagen" accept=".png, .jpg, .jpeg">
+                            <input type="file" class="form-control" name="imagen" accept=".png, .jpg, .jpeg, image/png, image/jpeg">
                         </div>
                     </div>
 
